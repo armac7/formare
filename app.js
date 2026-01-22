@@ -5,7 +5,7 @@ import express from 'express'
 const app = express()
 
 app.get('/', (req, res) => {
-  res.send('Hello World')
+  res.send('Obi-Wan: "Hello, There" \n General Grevious: "Obi-Wan Kenobi!"')
 })
 
 app.listen(3000, () => {
