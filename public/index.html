@@ -8,5 +8,15 @@
     </head>
     <body>
         <h1>Welcome to DevOps Node Work</h1>
+        <a href="/json">json</a>
+
+        <script>
+            fetch('/api/json')
+                .then(response => response.json())
+                .then(data => {
+                    document.body.innerHTML += `<p>API says: ${data.myVar}</p>`;
+                })
+                .catch(error => console.error(`<p>Error fetching API:</p>`, error));
+        </script>
     </body>
 </html>

@@ -20,6 +20,11 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'index.html'));
 })
 
+app.get('/api/json', (req, res) => {
+  const myVar = "Hello from server!";
+  res.json({ myVar });
+});
+
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000')
-})
+});
