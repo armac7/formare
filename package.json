@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Work done in Spring 2026 CIS 486 @ UNA",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
