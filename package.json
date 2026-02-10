@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/armac7/devops-node-work#readme",
   "dependencies": {
+    "dotenv": "^17.2.4",
     "express": "^5.2.1"
   }
 }
