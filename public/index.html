@@ -1,22 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>DevOps Node Work</title>
-    </head>
-    <body>
-        <h1>Welcome to DevOps Node Work</h1>
-        <a href="/json">json</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formare</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <nav>
+        <div class="logo">Formare</div>
+        <ul id="nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
 
-        <script>
-            fetch('/api/json')
-                .then(response => response.json())
-                .then(data => {
-                    document.body.innerHTML += `<p>API says: ${data.myVar}</p>`;
-                })
-                .catch(error => console.error(`<p>Error fetching API:</p>`, error));
-        </script>
-    </body>
+    <div class="hero">
+        <div class="section">
+            <div class="hero-padding">
+                <h1>Form yourself <br>through <em>stable</em> <br>commitment.</h1>
+                <p>Formare is not a productivity tool. It is a place to articulate who you are becoming — through the slow, deliberate practice of virtue, honest reflection, and a written rule ordered toward your own formation.</p>
+                <button class="btn-primary">Get Started</button>
+                <button class="btn-secondary">Learn More</button>
+            </div>
+        </div>
+
+        <div class="section mid-parchment">
+            <div class="hero-padding">
+                <h1>Our Services</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <button class="btn-primary">View Services</button>
+
+                <div class="panel">
+                    <p>Example Rule</p>
+                    <h2>When you pray to God in Psalms and hymns, think over in your hearts the words that come from your lips.</h2>
+                    <p class="border-top">- Example from the Rule of St. Augustine</p>
+                </div>
+
+                <form id="registerForm">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+
+                    <button type="submit">Register</button>
+                </form>
+
+                <form id="loginForm">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/register.js"></script>
+    <script src="/login.js"></script>
+</body>
 </html>
