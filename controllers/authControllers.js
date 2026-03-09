@@ -1,0 +1,44 @@
+import bcrypt from 'bcrypt';
+import { User } from '../models/User.js';
+
+export async function login(req, res) {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  console.log('Password encrypted in DB:', bcrypt.hash(password, 10)); // Log the encrypted password for debugging
+
+  if (!user) {
+    return res.status(401).send('Invalid username or password');
+  }
+
+    const match = await bcrypt.compare(password, user.password);
+    
+  if (!match) {
+    return res.status(401).send('Invalid username or password');
+  }
+
+  // create session
+  req.session.user = { id: user._id, username: user.username };
+  console.log('User logged in:', req.session.user); // Log the session user for debugging
+  res.send('Login successful');
+};
+
+export async function register(req, res) {
+  const { username, password, confirmPassword } = req.body;
+
+  // Check if username already exists
+  const existingUser = await User.findOne({ username });
+  if (existingUser) {
+    return res.status(400).send('Username already exists');
+  }
+
+  // Check if passwords match
+  if (password !== confirmPassword) {
+    return res.status(400).send('Passwords do not match');
+  }
+
+  // Hash the password and save the new user to the database
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new User({ username, password: hashedPassword });
+  await newUser.save();
+  res.send('Registration successful');
+};
