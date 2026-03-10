@@ -128,7 +128,7 @@ nav a {
 }
 
 /* LOGIN */
-.login {
+.floating-form {
     display: flex;
     flex-direction: column;
     gap: 1rem;

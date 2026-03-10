@@ -1,5 +1,5 @@
-import { checkLogin } from "/scripts/checkLogin.js";
-import { logout } from "/scripts/logout.js"; 
+import { checkLogin } from "/scripts/auth/checkLogin.js";
+import { logout } from "/scripts/auth/logout.js"; 
 
 document.addEventListener("DOMContentLoaded", async function() {
     // Load navbar
