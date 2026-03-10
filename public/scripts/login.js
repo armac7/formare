@@ -1,6 +1,7 @@
 const loginForm = document.getElementById('loginForm');
 
 loginForm.addEventListener('submit', async (e) => {
+    
     e.preventDefault();
 
     const formData = new FormData(loginForm);
@@ -14,5 +15,11 @@ loginForm.addEventListener('submit', async (e) => {
         body: JSON.stringify(data)
     });
 
-    alert(await res.text());
+    if (!res.ok) 
+    {
+        const errorMessage = await res.text()
+        document.getElementById("errorText").innerHTML = errorMessage;
+    }
+    else
+        window.location.replace("/index.html");
 });
