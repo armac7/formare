@@ -1,4 +1,7 @@
 // app.js
+import sessionMiddleware from './middleware/session.js';
+import sessionRoutes from './routes/sessionRoutes.js'
+
 import 'dotenv/config'; 
 import express from 'express';
 import { fileURLToPath } from 'url';
@@ -6,7 +9,6 @@ import { dirname, join } from 'path';
 // import { MongoClient , ServerApiVersion} from 'mongodb';
 
 import { connectDB } from './config/db.js';
-import sessionMiddleware from './middleware/session.js';
 import authRoutes from './routes/authRoutes.js';
 
 // to get __dirname in ES6
@@ -18,7 +20,6 @@ console.log('Current file:', __filename)
 const app = express()
 
 connectDB();
-app.use(sessionMiddleware);
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(express.json());
@@ -28,7 +29,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'index.html'));
 })
+app.use(sessionMiddleware);
 
+app.use('/', sessionRoutes);
 app.use('/', authRoutes);
 
 app.listen(3000, () => {
