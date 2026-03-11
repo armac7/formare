@@ -15,7 +15,7 @@
 }
 
 .hidden {
-    visibility: hidden;
+    display: none;
 }
 
 body {
@@ -145,4 +145,12 @@ nav a {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+}
+
+.profile-display {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    margin-left: 5rem;
+    margin-bottom: 1rem;
 }

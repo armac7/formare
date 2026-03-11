@@ -2,9 +2,22 @@ import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
 import { User } from '../models/User.js';
 
+export async function getUserData(req, res) {
+  if (req.session.user) {
+    const { username } = req.session.user;
+    const user = await User.findOne({ username });
+
+    if (user) {
+      res.json({ loggedIn: true, username: user.username });
+    } else {
+      res.json({ loggedIn: false });
+    }
+  }
+}
+
 export async function deleteUser(req, res) {
   try {
-    console.log("Delete User Request: ", req.session.user); // Log the session user for debugging
+    console.log("(deleteUser backend function) Delete User Request: ", req.session.user); // Log the session user for debugging
     const username = req.session.user.username;
       
     await mongoose.connection.db.collection('users').deleteOne({ username });
