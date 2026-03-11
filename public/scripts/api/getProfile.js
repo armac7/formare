@@ -1,3 +1,5 @@
+import { logout } from "/scripts/auth/logout.js";
+
 document.addEventListener("DOMContentLoaded", function () {
     const currPage = window.location.pathname.split("/").pop();
     if (currPage === "profile.html") {
@@ -7,6 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 window.location.href = "/login.html";
             }
+        });
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await logout();
+            window.location.href = "/index.html?cachebust=" + Date.now();
         });
     }
 });

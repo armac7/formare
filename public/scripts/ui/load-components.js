@@ -35,15 +35,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             if (!response.ok) throw new Error("Failed to load navbar");
 
             navbar.innerHTML = await response.text();
-            // adds logout functionality to navbar
-            const logoutLink = document.getElementById('logoutLink');
-            if (logoutLink) {
-                logoutLink.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    await logout();
-                    window.location.href = "/index.html?cachebust=" + Date.now();
-                });
-            }
 
             document.getElementById('welcomeUser').innerHTML = `Welcome, ${userData.username}!`;
         }
