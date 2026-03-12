@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formare</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav id="navbar"></nav>
+
+    <div class="floating-form">
+        <form id="profileForm">
+            <h2>Profile</h2>
+            <div class="profile-display">
+                <label for="username">Username:</label>
+                <p id="usernameDisplay"></p>
+                <input class="hidden" type="text" id="editUsername" name="username" required>
+            </div>
+            <div class="profile-display">
+                <label for="password">Password:</label>
+                <p id="passwordDisplay">********</p>
+                <input class="hidden" type="password" id="editPassword" name="password" required>
+            </div>
+
+            <button type="button" id="editInfoBtn" class="btn-danger">Edit Information</button>
+            <button type="button" id="deleteAccountBtn" class="btn-danger">Delete Account</button>
+            <button type="button" id="logoutBtn" class="btn-danger">Logout</button>
+            <button type="submit" id="saveChangesBtn" class="btn-danger hidden">Save Changes</button>
+            <button type="submit" id="cancelEditBtn" class="btn-danger hidden">Cancel</button>
+        </form>
+    </div>
+
+    <script type="module" src="/scripts/ui/load-components.js"></script>
+    <script type="module" src="/scripts/api/editProfile.js"></script>
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+</html>

@@ -6,12 +6,18 @@ regForm.addEventListener('submit', async (e) => {
     const formData = new FormData(regForm);
     const data = Object.fromEntries(formData);
 
-    const res = await fetch('/register', {
+    const res = await fetch('/users', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },        body: JSON.stringify(data)
     });
 
-    alert(await res.text());
+    if (!res.ok) 
+    {
+        const errorMessage = await res.text()
+        alert(`Error: ${errorMessage}`);
+    }
+    else
+        window.location.replace("/login.html");
 });

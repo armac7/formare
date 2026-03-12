@@ -1,5 +1,5 @@
-import { checkLogin } from "/scripts/checkLogin.js";
-import { logout } from "/scripts/logout.js"; 
+import { checkLogin } from "/scripts/auth/checkLogin.js";
+import { logout } from "/scripts/auth/logout.js"; 
 
 document.addEventListener("DOMContentLoaded", async function() {
     // Load navbar
@@ -35,17 +35,15 @@ document.addEventListener("DOMContentLoaded", async function() {
             if (!response.ok) throw new Error("Failed to load navbar");
 
             navbar.innerHTML = await response.text();
-            // adds logout functionality to navbar
-            const logoutLink = document.getElementById('logoutLink');
-            if (logoutLink) {
-                logoutLink.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    await logout();
-                    window.location.href = "/index.html?cachebust=" + Date.now();
-                });
-            }
 
             document.getElementById('welcomeUser').innerHTML = `Welcome, ${userData.username}!`;
+
+            if (currPage === "index.html") {
+                document.querySelector('a[href="index.html"]').classList.add("selected");
+            } else if (currPage === "profile.html") {
+                document.querySelector('a[href="index.html"]').classList.remove('selected');
+                document.querySelector('a[href="profile.html"]').classList.add("selected");
+            }
         }
     }
     catch (err) {

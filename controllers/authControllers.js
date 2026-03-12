@@ -37,24 +37,3 @@ export async function logout(req, res)
     res.status(200).json({success: true});
   });
 }
-
-export async function register(req, res) {
-  const { username, password, confirmPassword } = req.body;
-
-  // Check if username already exists
-  const existingUser = await User.findOne({ username });
-  if (existingUser) {
-    return res.status(400).send('Username already exists');
-  }
-
-  // Check if passwords match
-  if (password !== confirmPassword) {
-    return res.status(400).send('Passwords do not match');
-  }
-
-  // Hash the password and save the new user to the database
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ username, password: hashedPassword });
-  await newUser.save();
-  res.send('Registration successful');
-};

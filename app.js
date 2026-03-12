@@ -1,6 +1,7 @@
 // app.js
 import sessionMiddleware from './middleware/session.js';
 import sessionRoutes from './routes/sessionRoutes.js'
+import { requiredAuth } from './middleware/session.js';
 
 import 'dotenv/config'; 
 import express from 'express';
@@ -10,6 +11,7 @@ import { dirname, join } from 'path';
 
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
+import dbRoutes from './routes/dbRoutes.js';
 
 // to get __dirname in ES6
 const __filename = fileURLToPath(import.meta.url);
@@ -31,8 +33,10 @@ app.get('/', (req, res) => {
 })
 app.use(sessionMiddleware);
 
+
 app.use('/', sessionRoutes);
 app.use('/', authRoutes);
+app.use('/', dbRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000')
