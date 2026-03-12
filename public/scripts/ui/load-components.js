@@ -37,6 +37,13 @@ document.addEventListener("DOMContentLoaded", async function() {
             navbar.innerHTML = await response.text();
 
             document.getElementById('welcomeUser').innerHTML = `Welcome, ${userData.username}!`;
+
+            if (currPage === "index.html") {
+                document.querySelector('a[href="index.html"]').classList.add("selected");
+            } else if (currPage === "profile.html") {
+                document.querySelector('a[href="index.html"]').classList.remove('selected');
+                document.querySelector('a[href="profile.html"]').classList.add("selected");
+            }
         }
     }
     catch (err) {

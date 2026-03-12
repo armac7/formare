@@ -18,20 +18,24 @@
             <div class="profile-display">
                 <label for="username">Username:</label>
                 <p id="usernameDisplay"></p>
-                <input class="hidden" type="text" id="username" name="username" disabled>
+                <input class="hidden" type="text" id="editUsername" name="username" required>
             </div>
             <div class="profile-display">
                 <label for="password">Password:</label>
                 <p id="passwordDisplay">********</p>
-                <input class="hidden" type="password" id="password" name="password" disabled>
+                <input class="hidden" type="password" id="editPassword" name="password" required>
             </div>
-            <button id="editInfoBtn" class="btn-danger">Edit Information</button>
-            <button id="deleteAccountBtn" class="btn-danger">Delete Account</button>
-            <button id="logoutBtn" class="btn-danger">Logout</button>
+
+            <button type="button" id="editInfoBtn" class="btn-danger">Edit Information</button>
+            <button type="button" id="deleteAccountBtn" class="btn-danger">Delete Account</button>
+            <button type="button" id="logoutBtn" class="btn-danger">Logout</button>
+            <button type="submit" id="saveChangesBtn" class="btn-danger hidden">Save Changes</button>
+            <button type="submit" id="cancelEditBtn" class="btn-danger hidden">Cancel</button>
         </form>
     </div>
 
     <script type="module" src="/scripts/ui/load-components.js"></script>
+    <script type="module" src="/scripts/api/editProfile.js"></script>
     <script type="module" src="/scripts/main.js"></script>
 </body>
 </html>

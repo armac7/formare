@@ -38,6 +38,35 @@ export async function deleteUser(req, res) {
   }
 }
 
+export async function editUser(req, res) {
+  try {
+    const { username } = req.session.user;
+    const { username: newUsername, password: newPassword } = req.body;
+
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (newUsername) {
+      user.username = newUsername;
+    }
+    if (newPassword) {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+    }
+
+    await user.save();
+    req.session.user.username = user.username;
+
+    res.json({ message: 'Profile updated successfully' });
+  } catch (err) {
+    console.error('Error updating profile:', err);
+    res.status(500).json({ message: 'Error updating profile' });
+  }
+};
+
 export async function register(req, res) {
   const { username, password, confirmPassword } = req.body;
 

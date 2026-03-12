@@ -1,6 +1,7 @@
 // app.js
 import sessionMiddleware from './middleware/session.js';
 import sessionRoutes from './routes/sessionRoutes.js'
+import { requiredAuth } from './middleware/session.js';
 
 import 'dotenv/config'; 
 import express from 'express';
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'index.html'));
 })
 app.use(sessionMiddleware);
+
 
 app.use('/', sessionRoutes);
 app.use('/', authRoutes);

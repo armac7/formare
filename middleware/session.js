@@ -25,3 +25,11 @@ export async function loggedIn(req, res) {
         res.status(401).json({ loggedIn: false });
     }
 }
+
+export async function requiredAuth(req, res, next) {
+    if (!req.session || !req.session.user) {
+        return res.redirect('/login.html');
+    } 
+
+    next();
+};
