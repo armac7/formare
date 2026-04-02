@@ -68,6 +68,7 @@ Planned / current stack:
 **Backend**
 - Node.js
 - Express.js
+- Mongoose
 
 **Database**
 - MongoDB
