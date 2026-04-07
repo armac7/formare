@@ -41,9 +41,10 @@ Stores detailed physiological data recorded daily for each user.
 | `date`                        | String (MM/DD/YYYY) | The date of the entry. |
 | `user`                        | String          | Username of the user this entry belongs to. |
 | `blood-info`                  | String          | Bleeding information for the day (e.g., "light", "medium", "heavy"). |
-| `cervical-mucus-sensation`    | String          | Sensation observed for cervical mucus (e.g., "sticky", "creamy", "watery"). |
-| `cervical-mucus-characteristic` | String        | Physical characteristic of cervical mucus (e.g., "transparent", "cloudy"). |
-| `secondary-biomarkers`        | Array of Strings | Any additional biomarker data (e.g., basal body temperature, ovulation test results). |
+| `cervical-mucus-sensation`    | String          | Sensation observed for cervical mucus (e.g., "dry", "moist", "wet"). |
+| `cervical-mucus-characteristic` | String        | Physical characteristic of cervical mucus (e.g., "tacky", "stretchy"). |
+| `basil-body-temp` | Double | Recorded Basil Body Temperature (e.g., "98.82") |
+| `secondary-biomarkers`        | Array of Strings | Any additional biomarker data (e.g., headache, back ache, fatigue, etc.). |
 | `notes`                       | String          | Optional notes provided by the user. |
 
 **Example Document:**
@@ -53,9 +54,10 @@ Stores detailed physiological data recorded daily for each user.
   "date": "04/07/2026",
   "user": "jane_doe",
   "blood-info": "light",
-  "cervical-mucus-sensation": "creamy",
-  "cervical-mucus-characteristic": "cloudy",
-  "secondary-biomarkers": ["basal body temperature: 36.7°C", "ovulation test: negative"],
+  "cervical-mucus-sensation": "light",
+  "cervical-mucus-characteristic": "dry",
+  "basil-body-temp": "98.82",
+  "secondary-biomarkers": ["headache", "pms", "backache"],
   "notes": "Mild cramps in the morning"
 }
 ```
