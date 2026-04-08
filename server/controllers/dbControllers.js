@@ -1,6 +1,55 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
 import { User } from '../models/User.js';
+import { BodyStatus } from '../models/BodyStatus.js';
+
+export async function getBodyStatus(req, res) {
+  if (req.session.user) {
+    const { username } = req.session.user;
+    const { date } = req.query;
+
+    try {
+      const bodyStatus = await BodyStatus.findOne({ username, date });
+
+      if (bodyStatus) {
+        res.json(bodyStatus);
+      } else {
+        res.status(404).json({ message: 'No body status found for the specified date' });
+      }
+    } catch (err) {
+      console.error('Error fetching body status:', err);
+      res.status(500).json({ message: 'Error fetching body status' });
+    }
+  }
+}
+
+export async function editBodyStatus(req, res) {
+  if (!req.session.user) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  const { username } = req.session.user;
+  const { date, basilBodyTemp, mucusSensations, mucusCharacteristics, secondaryBiomarkers, notes } = req.body;
+
+  const fields = { basilBodyTemp, mucusSensations, mucusCharacteristics, secondaryBiomarkers, notes };
+  // filters out all undefined fields to avoid overwriting existing data with undefined values when using findOneAndUpdate with upsert: true
+  const update = Object.fromEntries(Object.entries(fields).filter(([_, v]) => 
+    v !== undefined
+  ));
+
+  try {
+    const bodyStatus = await BodyStatus.findOneAndUpdate(
+      { username, date },
+      { $set: update },
+      { new: true, upsert: true }
+    );
+
+    res.json({ message: 'Body status saved successfully' });
+  } catch (err) {
+    console.error('Error saving body status:', err);
+    res.status(500).json({ message: 'Error saving body status' });
+  }
+}
 
 export async function getUserData(req, res) {
   if (req.session.user) {
