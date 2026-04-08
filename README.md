@@ -17,8 +17,8 @@ Currently in:
 Upcoming milestones:
 
 [(Sprint 1)](https://github.com/armac7/formare/milestone/1)
-- [ ] [Database Schema](https://github.com/armac7/formare/issues/9)
-- [ ] [Front End UI/UX Design](https://github.com/armac7/formare/issues/10)
+- [x] [Database Schema](https://github.com/armac7/formare/issues/9)
+- [x] [Front End UI/UX Design](https://github.com/armac7/formare/issues/10)
 - [ ] [Front End UI/UX Implementation](https://github.com/armac7/formare/issues/11)
 - [ ] [Primary biomarker entry system](https://github.com/armac7/formare/issues/12)
 - [ ] [Day-by-day notes entry system](https://github.com/armac7/formare/issues/12)
