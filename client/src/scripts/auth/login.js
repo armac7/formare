@@ -1,25 +1,17 @@
-const loginForm = document.getElementById('loginForm');
-
-loginForm.addEventListener('submit', async (e) => {
-    
-    e.preventDefault();
-
-    const formData = new FormData(loginForm);
-    const data = Object.fromEntries(formData);
-
+export async function login(username, password) {
     const res = await fetch('/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({ username, password })
     });
 
-    if (!res.ok) 
-    {
-        const errorMessage = await res.text()
-        document.getElementById("errorText").innerHTML = errorMessage;
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(data.message || 'Login failed');
     }
-    else
-        window.location.replace("/index.html");
-});
+
+    return data;
+};

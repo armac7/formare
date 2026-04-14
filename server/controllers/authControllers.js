@@ -20,7 +20,7 @@ export async function login(req, res) {
   req.session.user = { id: user._id, username: user.username };
   req.session.save();
   // console.log('User logged in:', req.session.user); // Log the session user for debugging
-  res.json({ success: true, message: `Welcome, ${req.session.user.username}!` });
+  res.json({ success: true, username: req.session.user.username, token: req.sessionID });
 };
 
 export async function logout(req, res) 
