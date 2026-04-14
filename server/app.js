@@ -23,7 +23,7 @@ const app = express()
 
 connectDB();
 
-app.use(express.static(join(__dirname, '../client/dist')));
+app.use(express.static(join(__dirname, '../client/public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
