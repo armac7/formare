@@ -8,6 +8,34 @@ This app is designed primarily for **cycle awareness and health tracking**, not 
 
 ---
 
+## 🚧 Project Status Dashboard
+
+Currently in:
+
+> 🏗️ Early development
+
+Upcoming milestones:
+
+[(Sprint 1)](https://github.com/armac7/formare/milestone/1)
+- [x] [Database Schema](https://github.com/armac7/formare/issues/9)
+- [x] [Front End UI/UX Design](https://github.com/armac7/formare/issues/10)
+- [ ] [Front End UI/UX Implementation](https://github.com/armac7/formare/issues/11)
+- [ ] [Primary biomarker entry system](https://github.com/armac7/formare/issues/12)
+- [ ] [Day-by-day notes entry system](https://github.com/armac7/formare/issues/12)
+- [ ] User authentication
+
+[(Sprint 2)](https://github.com/armac7/formare/milestone/2)
+- [ ] [Cycle calculation engine](https://github.com/armac7/formare/issues/13)
+- [ ] [Secondary biomarker entry system](https://github.com/armac7/formare/issues/14)
+- [ ] [Mobile-friendly UI](https://github.com/armac7/formare/issues/15)
+- [ ] Historical tracking view
+
+[(Sprint 3)](https://github.com/armac7/formare/milestone/3)
+- [ ] [AI integration for Daily Insights feature](https://github.com/armac7/formare/issues/16)
+- [ ] [Chart view](https://github.com/armac7/formare/issues/17)
+
+---
+
 ## ✨ Features
 
 ### 📊 Primary Biomarker Tracking
@@ -72,33 +100,6 @@ Planned / current stack:
 
 **Database**
 - MongoDB
-
----
-
-## 🚧 Project Status
-
-Currently in:
-
-> 🏗️ Early development
-
-Upcoming milestones:
-
-(Sprint 1)
-- [ ] Database Schema
-- [ ] Front End UI/UX Design
-- [ ] User authentication
-- [ ] Primary biomarker entry system
-- [ ] Day-by-day notes entry system
-
-(Sprint 2)
-- [ ] Secondary biomarker entry system
-- [ ] Cycle calculation engine
-- [ ] Historical tracking view
-- [ ] Mobile-friendly UI
-
-(Sprint 3)
-- [ ] AI integration for Daily Insights feature
-- [ ] Chart view
 
 ---
 
