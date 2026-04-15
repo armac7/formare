@@ -14,6 +14,11 @@ export default function LoginPage({ onLogin }) {
     try {
       const data = await login(username, pass);
 
+      if (!data.success) {
+        setErr("Invalid credentials.");
+        return;
+      }
+
       onLogin({
         name: data.username,
         token: data.token
@@ -22,7 +27,7 @@ export default function LoginPage({ onLogin }) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("username", data.username);
     } catch (error) {
-      setErr(error.message);
+      setErr(error);
     }
   }
 

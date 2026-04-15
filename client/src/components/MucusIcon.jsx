@@ -1,10 +1,10 @@
 export default function MucusIcon({ type, characteristic, size = 22 }) {
   const icons = {
     dry:         { emoji: "🏜️", label: "Dry" },
-    sticky:      { emoji: "🍯", label: "Sticky" },
-    creamy:      { emoji: "🥛", label: "Creamy" },
-    watery:      { emoji: "💧", label: "Watery" },
-    "egg-white": { emoji: "✨", label: "Egg-white" },
+    moist:      { emoji: "💧", label: "Moist" },
+    wet:      { emoji: "💦", label: "Wet" },
+    slippery: { emoji: "🧊", label: "Slippery" },
+    "wet/slippery": { emoji: "💦🧊", label: "Wet/Slippery" },
   };
   const ic = icons[type] || { emoji: "—", label: "None" };
   return (

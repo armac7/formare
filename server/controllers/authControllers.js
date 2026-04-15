@@ -7,13 +7,13 @@ export async function login(req, res) {
   // console.log('Password encrypted in DB:', bcrypt.hash(password, 10)); // Log the encrypted password for debugging
 
   if (!user) {
-    return res.status(401).send('Invalid username or password');
+    return res.status(401).json({ success: false, message: "Invalid username or password." });
   }
 
   const match = await bcrypt.compare(password, user.password);
     
   if (!match) {
-    return res.status(401).send('Invalid username or password');
+    return res.status(401).json({ success: false, message: "Invalid username or password." });
   }
 
   // create session

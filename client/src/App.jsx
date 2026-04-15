@@ -16,11 +16,20 @@ export default function App() {
   const [view,        setView]        = useState("calendar"); // calendar | edit
   const [activeTab,   setActiveTab]   = useState("calendar");
   const [selectedDay, setSelectedDay] = useState(TODAY.getDate());
-  const [editDay,     setEditDay]     = useState(null);
+  const [editDay, setEditDay] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  function handleLogin(userData) {
-    setUser(userData);
+  async function handleLogin() {
+  const res = await fetch("/auth", {
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (data.loggedIn) {
+    setUser({ name: data.username });
   }
+}
 
   function handleLogout() {
     setUser(null);
@@ -30,19 +39,32 @@ export default function App() {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
-    if (token && username) {
-      setUser({ name: username, token: token });
+  async function checkAuth() {
+    try {
+      const res = await fetch("/auth", {
+        credentials: "include"
+      });
+
+      const data = await res.json();
+
+      if (data.loggedIn) {
+        setUser({ name: data.username });
+      } else {
+        setUser(null);
+      }
+    } catch (err) {
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  }
 
-  if (!user) return (
-    <>
-      <LoginPage onLogin={handleLogin} />
-    </>
-  );
+  checkAuth();
+}, []);
 
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <LoginPage onLogin={handleLogin} />;
+  
   if (view === "edit") return (
     <>
       <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--cream)" }}>

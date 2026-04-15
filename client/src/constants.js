@@ -3,6 +3,8 @@ export const TODAY = new Date();
 export const YEAR  = TODAY.getFullYear();
 export const MONTH = TODAY.getMonth();
 
+console.log(`Today is ${TODAY}, year: ${YEAR}, month: ${MONTH}`);
+
 export const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export const MONTH_NAMES  = [
   "January","February","March","April","May","June",
@@ -15,7 +17,7 @@ function makeMockData() {
   const daysInMonth = new Date(YEAR, MONTH + 1, 0).getDate();
 
   const bleedingDays = { 1: "heavy", 2: "heavy", 3: "medium", 4: "light", 5: "spotting" };
-  const mucusTypes = ["dry", "sticky", "creamy", "watery", "egg-white"];
+  const mucusTypes = ["dry", "moist", "wet", "slippery", "wet/slippery"];
   const bbtBase = 97.2;
 
   for (let d = 1; d <= Math.min(TODAY.getDate(), daysInMonth); d++) {
@@ -23,12 +25,13 @@ function makeMockData() {
       bbt: bleedingDays[d] ? null : parseFloat((bbtBase + Math.random() * 0.8 + (d > 14 ? 0.4 : 0)).toFixed(2)),
       bleeding: bleedingDays[d] || null,
       mucus: bleedingDays[d] ? null : mucusTypes[Math.floor(Math.random() * mucusTypes.length)],
-      mucusCharacteristic: ["opaque", "translucent", "clear", "stretchy"][Math.floor(Math.random() * 4)],
+      mucusCharacteristic: ["nothing", "tacky", "stretchy"][Math.floor(Math.random() * 3)],
       symptoms: d % 3 === 0 ? ["fatigue"] : d % 5 === 0 ? ["headache", "backache"] : [],
       notes: d === 3 ? "Felt very tired today, cramps in the morning." : d === 14 ? "Peak day — noticed stretchy CM." : "",
     };
   }
 
+  console.log(data);
   return { entries: data, projectedPeriod: [28, 29, 30, 31] };
 }
 
@@ -40,10 +43,12 @@ export const bleedingColor = {
   medium:   "#D4788A",
   light:    "#E8A8B4",
   spotting: "#F2D0D5",
+  brown: "#A0522D",
+  none: "#3A2A2A"
 };
 
 export const bleedingLabel = {
-  heavy: "Heavy", medium: "Medium", light: "Light", spotting: "Spotting",
+  heavy: "Heavy", medium: "Medium", light: "Light", spotting: "Spotting", brown: "Brown", none: "None",
 };
 
 // ─── Edit View Options ────────────────────────────────────────────────────────
@@ -54,9 +59,9 @@ export const SYMPTOM_OPTIONS = [
   { key: "mood",     emoji: "😌", label: "Mood Changes" },
 ];
 
-export const MUCUS_OPTIONS = ["dry", "sticky", "creamy", "watery", "egg-white"];
-export const MUCUS_CHAR    = ["opaque", "translucent", "clear", "stretchy"];
-export const BLEEDING_OPT  = ["none", "spotting", "light", "medium", "heavy"];
+export const MUCUS_OPTIONS = ["dry", "moist", "wet", "slippery", "wet/slippery"];
+export const MUCUS_CHAR    = ["nothing", "tacky", "stretchy"];
+export const BLEEDING_OPT  = ["none", "spotting", "light", "medium", "heavy", "brown"];
 
 // ─── Shared Styles ────────────────────────────────────────────────────────────
 export const inputStyle = {

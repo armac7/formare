@@ -6,6 +6,7 @@ const bodyStatusSchema = new mongoose.Schema({
     basilBodyTemp: { type: Number, required: false },
     mucusSensations: { type: String, required: false },
     mucusCharacteristics: { type: String, required: false },
+    bleeding: { type: String, required: false },
     secondaryBiomarkers: { type: [String], required: false },
     notes: { type: String, required: false }
 });
