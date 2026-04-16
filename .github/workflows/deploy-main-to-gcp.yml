@@ -34,12 +34,19 @@ jobs:
           ssh -i ~/.ssh/id_rsa -tt "$SSH_USER@$SSH_HOST" <<EOF
             set -e
 
+            sudo su - w_mcd0320
             cd "$APP_DIR"
 
             git fetch origin
             git reset --hard origin/main
             git clean -fd
-            npm ci
+            
+            cd client
+            npm i
+            npm run build
+            cd ..
+            cd server
+            npm i
 
             pm2 delete "$PM2_NAME" || true
             pm2 start -f app.js --name "$PM2_NAME"
