@@ -7,9 +7,6 @@ export async function logout()
         });
         
         if (!res.ok) throw new Error("Logout failed");
-
-        // console.log("Redirecting..."); //DEBUG
-        window.location.replace("/index.html?cachebust=" + Date.now());
     } catch (err) 
     {
         console.error("Logout Error: ", err);

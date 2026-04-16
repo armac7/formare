@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useMonthStatus } from "../context/MonthStatusContext.jsx";
+import { saveMonthStatus } from "../scripts/api/saveMonthStatus.js";
 import {
   TODAY, YEAR, MONTH, MONTH_NAMES,
   MOCK, bleedingColor, bleedingLabel,
@@ -12,10 +13,11 @@ import MucusIcon from "../components/MucusIcon.jsx";
 export default function DayByDayView({ initialDay, onBack }) {
   const daysInMonth = new Date(YEAR, MONTH + 1, 0).getDate();
   const [currentDay, setCurrentDay] = useState(initialDay || TODAY.getDate());
+  const data = useMonthStatus(); // ✅ called at top level
+  const { refetch } = useMonthStatus();
+
   const [localData, setLocalData] = useState(() => {
     const d = {};
-    const data = useMonthStatus();
-    console.log(data);
     for (let i = 1; i <= daysInMonth; i++) {
       d[i] = data.monthData[i]
         ? { ...data.monthData[i], symptoms: [...(data.monthData[i].symptoms || [])] }
@@ -37,8 +39,15 @@ export default function DayByDayView({ initialDay, onBack }) {
   }, [currentDay]);
 
   function update(field, value) {
-    setLocalData(prev => ({ ...prev, [currentDay]: { ...prev[currentDay], [field]: value } }));
-  }
+  setLocalData(prev => ({
+    ...prev,
+    [currentDay]: {
+      ...( prev[currentDay] ?? { bbt: null, bleeding: null, mucus: null, mucusCharacteristic: null, symptoms: [], notes: "" }),
+      [field]: value,
+    }
+  }));
+}
+
   function toggleSymptom(key) {
     const syms = localData[currentDay].symptoms || [];
     const next = syms.includes(key) ? syms.filter(s => s !== key) : [...syms, key];
@@ -69,7 +78,20 @@ export default function DayByDayView({ initialDay, onBack }) {
         <button style={{
           background: "var(--rose-deep)", color: "white", border: "none",
           borderRadius: 8, padding: "7px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer",
-        }} onClick={() => { /* save */ onBack(); }}>
+        }} onClick={async () => {
+          const payload = Object.fromEntries(
+            Object.entries(localData).map(([day, data]) => [
+              day,
+              {
+                ...data,
+                date: data.date ?? `${YEAR}-${String(MONTH + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+              }
+            ])
+          );
+          await saveMonthStatus(payload);
+          await refetch();
+          onBack();
+        }}>
           Save
         </button>
       </div>
@@ -84,7 +106,7 @@ export default function DayByDayView({ initialDay, onBack }) {
           const isFuture  = d > todayDate;
           const isSelected = d === currentDay;
           const e = localData[d];
-          const hasBleed = e?.bleeding && e.bleeding !== "none";
+          const hasBleed = e?.bleeding && e.bleeding !== "None";
 
           return (
             <div

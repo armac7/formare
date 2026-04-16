@@ -3,7 +3,7 @@ import { deleteUser, getUserData, editUser, register } from '../controllers/dbCo
 
 const router = express.Router();
 
-router.post('/users', register);
+router.post('/api/auth/register', register);
 router.put('/users/profile', editUser);
 router.get('/users/profile', getUserData);
 router.delete('/users/me', deleteUser);

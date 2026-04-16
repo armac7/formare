@@ -68,7 +68,7 @@ export default function CalendarView({ onSelectDay, selectedDay }) {
           let opacity   = 1;
 
           if (state === "future") { opacity = 0.5; textColor = "var(--future-grey)"; }
-          if (bleeding !== "None") {
+          if (bleeding && bleeding !== "None") {
             bg = bleedingColor[bleeding];
             textColor = bleeding === "spotting" ? "var(--burgundy)" : "white";
           }

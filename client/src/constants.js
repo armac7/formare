@@ -3,7 +3,7 @@ export const TODAY = new Date();
 export const YEAR  = TODAY.getFullYear();
 export const MONTH = TODAY.getMonth();
 
-console.log(`Today is ${TODAY}, year: ${YEAR}, month: ${MONTH}`);
+// console.log(`Today is ${TODAY}, year: ${YEAR}, month: ${MONTH}`);
 
 export const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export const MONTH_NAMES  = [
@@ -31,7 +31,7 @@ function makeMockData() {
     };
   }
 
-  console.log(data);
+  // console.log(data);
   return { entries: data, projectedPeriod: [28, 29, 30, 31] };
 }
 

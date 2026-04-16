@@ -50,20 +50,34 @@ export async function editBodyStatus(req, res) {
   }
 
   const { username } = req.session.user;
-  const { date, basilBodyTemp, mucusSensations, mucusCharacteristics, secondaryBiomarkers, notes } = req.body;
-
-  const fields = { basilBodyTemp, mucusSensations, mucusCharacteristics, secondaryBiomarkers, notes };
-  // filters out all undefined fields to avoid overwriting existing data with undefined values when using findOneAndUpdate with upsert: true
-  const update = Object.fromEntries(Object.entries(fields).filter(([_, v]) => 
-    v !== undefined
-  ));
+  const { monthData } = req.body;
 
   try {
-    const bodyStatus = await BodyStatus.findOneAndUpdate(
-      { username, date },
-      { $set: update },
-      { new: true, upsert: true }
-    );
+    for (const dayData of Object.values(monthData)) {
+      const { date, bbt, bleeding, mucus, mucusCharacteristic, notes, symptoms } = dayData;
+
+      const hasData = bbt || bleeding || mucus || mucusCharacteristic || notes || symptoms?.length > 0;
+      if (!hasData) continue;
+
+      const fields = {
+        basilBodyTemp: bbt,
+        bleeding,
+        mucusSensations: mucus,
+        mucusCharacteristics: mucusCharacteristic,
+        notes,
+        secondaryBiomarkers: symptoms ?? []
+      };
+
+      const update = Object.fromEntries(
+        Object.entries(fields).filter(([_, v]) => v !== undefined)
+      );
+
+      await BodyStatus.findOneAndUpdate(
+        { username, date },
+        { $set: update },
+        { returnDocument: 'after', upsert: true }
+      );
+    }
 
     res.json({ message: 'Body status saved successfully' });
   } catch (err) {
