@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt';
 import { User } from '../models/User.js';
+import { BodyStatus } from '../models/BodyStatus.js';
 
 export async function getUserData(req, res) {
   if (req.session.user) {
@@ -68,22 +69,25 @@ export async function editUser(req, res) {
 };
 
 export async function register(req, res) {
-  const { username, password, confirmPassword } = req.body;
+  try {
+    const { username, password, confirmPassword } = req.body;
 
-  // Check if username already exists
-  const existingUser = await User.findOne({ username });
-  if (existingUser) {
-    return res.status(400).send('Username already exists');
+    if (password !== confirmPassword) {
+      return res.status(400).json({ success: false, message: "Passwords do not match" });
+    }
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "Username already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, password: hashedPassword });
+    await newUser.save();
+
+    res.json({ success: true, username });
+  } catch (err) {
+    console.error("Registration error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
-
-  // Check if passwords match
-  if (password !== confirmPassword) {
-    return res.status(400).send('Passwords do not match');
-  }
-
-  // Hash the password and save the new user to the database
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ username, password: hashedPassword });
-  await newUser.save();
-  res.send('Registration successful');
-};
+}
