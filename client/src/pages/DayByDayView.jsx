@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useMonthStatus } from "../context/MonthStatusContext.jsx";
 import {
   TODAY, YEAR, MONTH, MONTH_NAMES,
   MOCK, bleedingColor, bleedingLabel,
@@ -13,9 +14,11 @@ export default function DayByDayView({ initialDay, onBack }) {
   const [currentDay, setCurrentDay] = useState(initialDay || TODAY.getDate());
   const [localData, setLocalData] = useState(() => {
     const d = {};
+    const data = useMonthStatus();
+    console.log(data);
     for (let i = 1; i <= daysInMonth; i++) {
-      d[i] = MOCK.entries[i]
-        ? { ...MOCK.entries[i], symptoms: [...(MOCK.entries[i].symptoms || [])] }
+      d[i] = data.monthData[i]
+        ? { ...data.monthData[i], symptoms: [...(data.monthData[i].symptoms || [])] }
         : { bbt: null, bleeding: null, mucus: null, mucusCharacteristic: null, symptoms: [], notes: "" };
     }
     return d;
@@ -169,7 +172,7 @@ export default function DayByDayView({ initialDay, onBack }) {
         <Section icon="🩸" title="Bleeding">
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {BLEEDING_OPT.map(opt => {
-              const active = (entry.bleeding || "none") === opt;
+              const active = (entry.bleeding || "None") === opt;
               return (
                 <button key={opt} onClick={() => update("bleeding", opt === "none" ? null : opt)} style={{
                   background: active ? (opt === "none" ? "var(--parchment)" : bleedingColor[opt]) : "var(--parchment)",
@@ -178,7 +181,7 @@ export default function DayByDayView({ initialDay, onBack }) {
                   borderRadius: 20, padding: "7px 16px", fontSize: 12, cursor: "pointer",
                   fontWeight: active ? 700 : 400, transition: "all 0.15s",
                 }}>
-                  {opt === "none" ? "None" : bleedingLabel[opt]}
+                  {opt === "None" ? "None" : bleedingLabel[opt]}
                 </button>
               );
             })}

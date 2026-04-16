@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { TODAY } from "./constants.js";
-
 // pages and components
 import LoginPage    from "./pages/LoginPage.jsx";
 import CalendarView from "./pages/CalendarView.jsx";
@@ -10,26 +9,21 @@ import InsightsView from "./pages/InsightsView.jsx";
 import ProfileView  from "./pages/ProfileView.jsx";
 import TabBar       from "./components/TabBar.jsx";
 import { logout } from "./scripts/auth/logout.js";
+import { MonthStatusProvider } from "./context/MonthStatusContext.jsx";
 
 export default function App() {
   const [user,        setUser]        = useState(null);
-  const [view,        setView]        = useState("calendar"); // calendar | edit
+  const [view,        setView]        = useState("calendar");
   const [activeTab,   setActiveTab]   = useState("calendar");
   const [selectedDay, setSelectedDay] = useState(TODAY.getDate());
-  const [editDay, setEditDay] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [editDay,     setEditDay]     = useState(null);
+  const [loading,     setLoading]     = useState(true);
 
   async function handleLogin() {
-  const res = await fetch("/auth", {
-    credentials: "include"
-  });
-
-  const data = await res.json();
-
-  if (data.loggedIn) {
-    setUser({ name: data.username });
+    const res = await fetch("/auth", { credentials: "include" });
+    const data = await res.json();
+    if (data.loggedIn) setUser({ name: data.username });
   }
-}
 
   function handleLogout() {
     setUser(null);
@@ -39,42 +33,34 @@ export default function App() {
   }
 
   useEffect(() => {
-  async function checkAuth() {
-    try {
-      const res = await fetch("/auth", {
-        credentials: "include"
-      });
-
-      const data = await res.json();
-
-      if (data.loggedIn) {
-        setUser({ name: data.username });
-      } else {
+    async function checkAuth() {
+      try {
+        const res = await fetch("/auth", { credentials: "include" });
+        const data = await res.json();
+        if (data.loggedIn) setUser({ name: data.username });
+        else setUser(null);
+      } catch (err) {
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setUser(null);
-    } finally {
-      setLoading(false);
     }
-  }
-
-  checkAuth();
-}, []);
+    checkAuth();
+  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (!user) return <LoginPage onLogin={handleLogin} />;
-  
+
   if (view === "edit") return (
-    <>
+    <MonthStatusProvider>
       <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--cream)" }}>
         <DayByDayView initialDay={editDay} onBack={() => setView("calendar")} />
       </div>
-    </>
+    </MonthStatusProvider>
   );
 
   return (
-    <>
+    <MonthStatusProvider>
       <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--cream)" }}>
         {/* App Header */}
         <div style={{
@@ -117,6 +103,6 @@ export default function App() {
         {/* Tab Bar */}
         <TabBar active={activeTab} onTab={tab => setActiveTab(tab)} />
       </div>
-    </>
+    </MonthStatusProvider>
   );
 }

@@ -1,7 +1,20 @@
 import { YEAR, MONTH, MOCK, bleedingColor, bleedingLabel, bioCard, bioLabel, bioValue, btnPrimaryStyle } from "../constants.js";
+import { useMonthStatus } from "../context/MonthStatusContext.jsx";
+
+import { useState, useEffect } from "react";
 import MucusIcon from "../components/MucusIcon.jsx";
 
 export default function DayOverview({ day, onEdit }) {
+  const { monthData, loading } = useMonthStatus();
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
   if (!day) {
     return (
       <div style={{ padding: "20px 20px 8px", textAlign: "center" }}>
@@ -12,7 +25,7 @@ export default function DayOverview({ day, onEdit }) {
     );
   }
 
-  const entry = MOCK.entries[day];
+  const entry = monthData[day];
   const dateLabel = new Date(YEAR, MONTH, day).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   return (
