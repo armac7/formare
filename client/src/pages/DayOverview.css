@@ -1,0 +1,221 @@
+/* ── Loading ── */
+.overview-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+}
+
+.overview-loading p {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* ── Empty state (no day selected) ── */
+.overview-empty-prompt {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* ── Wrapper ── */
+.overview-wrap {
+  padding: 0 16px 16px;
+}
+
+/* ── Day header ── */
+.overview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.overview-date-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--burgundy);
+}
+
+.overview-edit-btn {
+  background: var(--parchment);
+  border: 1px solid var(--gold-light);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--rose-deep);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s;
+}
+
+.overview-edit-btn:hover {
+  background: var(--gold-light);
+}
+
+/* ── Content stack ── */
+.overview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Biomarker cards row ── */
+.bio-row {
+  display: flex;
+  gap: 10px;
+}
+
+.bio-card {
+  flex: 1;
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.bio-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.bio-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bio-value--muted {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.bio-mucus-inner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bio-mucus-inner .bio-value {
+  font-size: 12px;
+}
+
+/* ── Symptoms ── */
+.overview-section {
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.overview-section-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.symptom-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.symptom-chip {
+  background: var(--rose-light);
+  color: var(--burgundy);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
+/* ── Notes ── */
+.overview-notes-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.overview-notes-text--empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── No entry state ── */
+.overview-no-entry {
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.overview-no-entry p {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.overview-add-btn {
+  margin-top: 12px;
+  padding: 9px 20px;
+  font-size: 13px;
+}
+
+/* ════════════════════════════════
+   DESKTOP  (≥ 768px)
+════════════════════════════════ */
+@media (min-width: 768px) {
+
+  .overview-wrap {
+    padding: 0 24px 24px;
+  }
+
+  .overview-date-label {
+    font-size: 24px;
+  }
+
+  .bio-card {
+    padding: 12px 16px;
+  }
+
+  .bio-label {
+    font-size: 11px;
+  }
+
+  .bio-value {
+    font-size: 15px;
+  }
+
+  .overview-section {
+    padding: 12px 16px;
+  }
+
+  .overview-section-label {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .symptom-chip {
+    font-size: 13px;
+    padding: 4px 12px;
+  }
+
+  .overview-notes-text {
+    font-size: 14px;
+  }
+}
