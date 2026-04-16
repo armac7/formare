@@ -3,17 +3,18 @@ import { useMonthStatus } from "../context/MonthStatusContext.jsx";
 import { saveMonthStatus } from "../scripts/api/saveMonthStatus.js";
 import {
   TODAY, YEAR, MONTH, MONTH_NAMES,
-  MOCK, bleedingColor, bleedingLabel,
+  bleedingColor, bleedingLabel,
   SYMPTOM_OPTIONS, MUCUS_OPTIONS, MUCUS_CHAR, BLEEDING_OPT,
   inputStyle,
 } from "../constants.js";
 import Section from "../components/Section.jsx";
 import MucusIcon from "../components/MucusIcon.jsx";
+import "./DayByDayView.css";
 
 export default function DayByDayView({ initialDay, onBack }) {
   const daysInMonth = new Date(YEAR, MONTH + 1, 0).getDate();
   const [currentDay, setCurrentDay] = useState(initialDay || TODAY.getDate());
-  const data = useMonthStatus(); // ✅ called at top level
+  const data = useMonthStatus();
   const { refetch } = useMonthStatus();
 
   const [localData, setLocalData] = useState(() => {
@@ -33,20 +34,20 @@ export default function DayByDayView({ initialDay, onBack }) {
     const container = scrollRef.current;
     if (!container) return;
     const CARD_W = 72;
-    const idx = currentDay - 1;
+    const idx    = currentDay - 1;
     const offset = idx * CARD_W - container.clientWidth / 2 + CARD_W / 2;
     container.scrollTo({ left: Math.max(0, offset), behavior: "smooth" });
   }, [currentDay]);
 
   function update(field, value) {
-  setLocalData(prev => ({
-    ...prev,
-    [currentDay]: {
-      ...( prev[currentDay] ?? { bbt: null, bleeding: null, mucus: null, mucusCharacteristic: null, symptoms: [], notes: "" }),
-      [field]: value,
-    }
-  }));
-}
+    setLocalData(prev => ({
+      ...prev,
+      [currentDay]: {
+        ...(prev[currentDay] ?? { bbt: null, bleeding: null, mucus: null, mucusCharacteristic: null, symptoms: [], notes: "" }),
+        [field]: value,
+      },
+    }));
+  }
 
   function toggleSymptom(key) {
     const syms = localData[currentDay].symptoms || [];
@@ -54,105 +55,102 @@ export default function DayByDayView({ initialDay, onBack }) {
     update("symptoms", next);
   }
 
-  const entry = localData[currentDay] || {};
+  async function handleSave() {
+    const payload = Object.fromEntries(
+      Object.entries(localData).map(([day, d]) => [
+        day,
+        {
+          ...d,
+          date: d.date ?? `${YEAR}-${String(MONTH + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+        },
+      ])
+    );
+    await saveMonthStatus(payload);
+    await refetch();
+    onBack();
+  }
+
+  const entry     = localData[currentDay] || {};
+  const weekday   = new Date(YEAR, MONTH, currentDay).toLocaleDateString("en-US", { weekday: "long" });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "var(--cream)" }}>
-      {/* Top bar */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "16px 20px", background: "white", borderBottom: "1px solid var(--gold-light)",
-        position: "sticky", top: 0, zIndex: 10,
-      }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "var(--rose-deep)" }}>
-          ←
-        </button>
-        <div style={{ textAlign: "center" }}>
-          <h2 style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 22, fontWeight: 400, color: "var(--burgundy)" }}>
-            {MONTH_NAMES[MONTH]} {currentDay}
-          </h2>
-          <p style={{ fontSize: 11, color: "var(--text-muted)", letterSpacing: 1 }}>
-            {new Date(YEAR, MONTH, currentDay).toLocaleDateString("en-US", { weekday: "long" })}
-          </p>
+    <div className="daybyday-wrap">
+
+      {/* ── Top bar ── */}
+      <div className="daybyday-topbar">
+        <button className="topbar-back-btn" onClick={onBack}>←</button>
+        <div className="topbar-center">
+          <h2 className="topbar-title">{MONTH_NAMES[MONTH]} {currentDay}</h2>
+          <p className="topbar-weekday">{weekday}</p>
         </div>
-        <button style={{
-          background: "var(--rose-deep)", color: "white", border: "none",
-          borderRadius: 8, padding: "7px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer",
-        }} onClick={async () => {
-          const payload = Object.fromEntries(
-            Object.entries(localData).map(([day, data]) => [
-              day,
-              {
-                ...data,
-                date: data.date ?? `${YEAR}-${String(MONTH + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
-              }
-            ])
-          );
-          await saveMonthStatus(payload);
-          await refetch();
-          onBack();
-        }}>
-          Save
-        </button>
+        <button className="topbar-save-btn" onClick={handleSave}>Save</button>
       </div>
 
-      {/* Day scroll strip */}
-      <div ref={scrollRef} style={{
-        overflowX: "auto", display: "flex", gap: 4, padding: "14px 16px",
-        background: "white", borderBottom: "1px solid var(--gold-light)",
-        scrollbarWidth: "none",
-      }}>
+      {/* ── Day scroll strip ── */}
+      <div className="day-scroll-strip" ref={scrollRef}>
         {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(d => {
-          const isFuture  = d > todayDate;
+          const isFuture   = d > todayDate;
           const isSelected = d === currentDay;
-          const e = localData[d];
-          const hasBleed = e?.bleeding && e.bleeding !== "None";
+          const e          = localData[d];
+          const hasBleed   = e?.bleeding && e.bleeding !== "None";
+
+          // Dynamic colors driven by data — stay inline
+          const cardStyle = {
+            background: isSelected
+              ? "var(--burgundy)"
+              : hasBleed
+                ? bleedingColor[e.bleeding]
+                : "var(--parchment)",
+            border: d === todayDate && !isSelected
+              ? "2px solid var(--gold)"
+              : "2px solid transparent",
+          };
+
+          const weekdayColor = isSelected ? "rgba(255,255,255,0.7)" : "var(--text-muted)";
+          const numColor     = isSelected
+            ? "white"
+            : hasBleed
+              ? (e.bleeding === "spotting" ? "var(--burgundy)" : "white")
+              : "var(--text)";
 
           return (
             <div
               key={d}
+              className={`day-card ${isFuture ? "day-card--future" : "day-card--clickable"}`}
+              style={cardStyle}
               onClick={() => !isFuture && setCurrentDay(d)}
-              style={{
-                minWidth: 60, height: 60, borderRadius: 12, flexShrink: 0,
-                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                background: isSelected ? "var(--burgundy)" : hasBleed ? bleedingColor[e.bleeding] : "var(--parchment)",
-                border: d === todayDate && !isSelected ? "2px solid var(--gold)" : "2px solid transparent",
-                cursor: isFuture ? "default" : "pointer",
-                opacity: isFuture ? 0.4 : 1,
-                transition: "all 0.15s",
-              }}
             >
-              <span style={{ fontSize: 10, color: isSelected ? "rgba(255,255,255,0.7)" : "var(--text-muted)", letterSpacing: 0.5 }}>
+              <span className="day-card-weekday" style={{ color: weekdayColor }}>
                 {new Date(YEAR, MONTH, d).toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()}
               </span>
-              <span style={{ fontSize: 16, fontWeight: 700, color: isSelected ? "white" : hasBleed ? (e.bleeding === "spotting" ? "var(--burgundy)" : "white") : "var(--text)" }}>
-                {d}
-              </span>
+              <span className="day-card-num" style={{ color: numColor }}>{d}</span>
             </div>
           );
         })}
       </div>
 
-      {/* Input sections */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* ── Input sections ── */}
+      <div className="daybyday-body">
 
         {/* BBT */}
         <Section icon="🌡️" title="Basal Body Temperature">
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div className="bbt-row">
             <input
-              type="number" step="0.01" min="96" max="100" placeholder="e.g. 97.40"
+              type="number"
+              step="0.01" min="96" max="100"
+              placeholder="e.g. 97.40"
               value={entry.bbt || ""}
               onChange={e => update("bbt", e.target.value ? parseFloat(e.target.value) : null)}
-              style={{ ...inputStyle, maxWidth: 140, textAlign: "center", fontSize: 18, fontWeight: 700, color: "var(--burgundy)" }}
+              style={{
+                ...inputStyle,
+                maxWidth: 140, textAlign: "center",
+                fontSize: 18, fontWeight: 700,
+                color: "var(--burgundy)",
+              }}
             />
-            <span style={{ fontSize: 14, color: "var(--text-muted)" }}>°F</span>
+            <span className="bbt-unit">°F</span>
             {entry.bbt && (
-              <span style={{
-                fontSize: 11, padding: "3px 8px", borderRadius: 20,
-                background: entry.bbt > 97.7 ? "var(--gold-light)" : "var(--sage-light)",
-                color: entry.bbt > 97.7 ? "var(--burgundy)" : "var(--sage)",
-                fontWeight: 700,
-              }}>
+              <span className={`bbt-phase-badge ${entry.bbt > 97.7 ? "bbt-phase-badge--high" : "bbt-phase-badge--low"}`}>
                 {entry.bbt > 97.7 ? "Post-ovulatory" : "Pre-ovulatory"}
               </span>
             )}
@@ -161,29 +159,27 @@ export default function DayByDayView({ initialDay, onBack }) {
 
         {/* Cervical Mucus */}
         <Section icon="💧" title="Cervical Mucus">
-          <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, letterSpacing: 1, textTransform: "uppercase" }}>Sensation</p>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+          <p className="mucus-sublabel">Sensation</p>
+          <div className="mucus-options">
             {MUCUS_OPTIONS.map(opt => (
-              <button key={opt} onClick={() => update("mucus", entry.mucus === opt ? null : opt)} style={{
-                background: entry.mucus === opt ? "var(--rose-deep)" : "var(--parchment)",
-                color: entry.mucus === opt ? "white" : "var(--text)",
-                border: "none", borderRadius: 20, padding: "7px 14px", fontSize: 12,
-                cursor: "pointer", fontWeight: entry.mucus === opt ? 700 : 400,
-                transition: "all 0.15s",
-              }}>
+              <button
+                key={opt}
+                className={`mucus-btn ${entry.mucus === opt ? "mucus-btn--active" : "mucus-btn--inactive"}`}
+                onClick={() => update("mucus", entry.mucus === opt ? null : opt)}
+              >
                 <MucusIcon type={opt} size={14} /> {opt}
               </button>
             ))}
           </div>
-          <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, letterSpacing: 1, textTransform: "uppercase" }}>Characteristic</p>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+
+          <p className="mucus-sublabel">Characteristic</p>
+          <div className="mucus-char-options">
             {MUCUS_CHAR.map(opt => (
-              <button key={opt} onClick={() => update("mucusCharacteristic", entry.mucusCharacteristic === opt ? null : opt)} style={{
-                background: entry.mucusCharacteristic === opt ? "var(--sage)" : "var(--parchment)",
-                color: entry.mucusCharacteristic === opt ? "white" : "var(--text)",
-                border: "none", borderRadius: 20, padding: "7px 14px", fontSize: 12, cursor: "pointer",
-                transition: "all 0.15s",
-              }}>
+              <button
+                key={opt}
+                className={`mucus-char-btn ${entry.mucusCharacteristic === opt ? "mucus-char-btn--active" : "mucus-char-btn--inactive"}`}
+                onClick={() => update("mucusCharacteristic", entry.mucusCharacteristic === opt ? null : opt)}
+              >
                 {opt}
               </button>
             ))}
@@ -192,17 +188,25 @@ export default function DayByDayView({ initialDay, onBack }) {
 
         {/* Bleeding */}
         <Section icon="🩸" title="Bleeding">
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <div className="bleeding-options">
             {BLEEDING_OPT.map(opt => {
               const active = (entry.bleeding || "None") === opt;
+              // Background + text color driven by bleedingColor data — stay inline
+              const btnStyle = {
+                background: active
+                  ? (opt === "none" ? "var(--parchment)" : bleedingColor[opt])
+                  : "var(--parchment)",
+                color: active && opt !== "none" && opt !== "spotting" ? "white" : "var(--text)",
+                border: active ? "2px solid transparent" : "2px solid var(--gold-light)",
+                fontWeight: active ? 700 : 400,
+              };
               return (
-                <button key={opt} onClick={() => update("bleeding", opt === "none" ? null : opt)} style={{
-                  background: active ? (opt === "none" ? "var(--parchment)" : bleedingColor[opt]) : "var(--parchment)",
-                  color: active && opt !== "none" && opt !== "spotting" ? "white" : "var(--text)",
-                  border: active ? "2px solid transparent" : "2px solid var(--gold-light)",
-                  borderRadius: 20, padding: "7px 16px", fontSize: 12, cursor: "pointer",
-                  fontWeight: active ? 700 : 400, transition: "all 0.15s",
-                }}>
+                <button
+                  key={opt}
+                  className="bleeding-btn"
+                  style={btnStyle}
+                  onClick={() => update("bleeding", opt === "none" ? null : opt)}
+                >
                   {opt === "None" ? "None" : bleedingLabel[opt]}
                 </button>
               );
@@ -212,19 +216,17 @@ export default function DayByDayView({ initialDay, onBack }) {
 
         {/* Secondary Symptoms */}
         <Section icon="🧩" title="Secondary Symptoms">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div className="symptoms-grid">
             {SYMPTOM_OPTIONS.map(s => {
               const active = (entry.symptoms || []).includes(s.key);
               return (
-                <button key={s.key} onClick={() => toggleSymptom(s.key)} style={{
-                  display: "flex", alignItems: "center", gap: 8,
-                  background: active ? "var(--rose-light)" : "var(--parchment)",
-                  border: `2px solid ${active ? "var(--rose)" : "transparent"}`,
-                  borderRadius: 10, padding: "10px 14px", cursor: "pointer",
-                  transition: "all 0.15s",
-                }}>
-                  <span style={{ fontSize: 18 }}>{s.emoji}</span>
-                  <span style={{ fontSize: 12, fontWeight: active ? 700 : 400, color: active ? "var(--burgundy)" : "var(--text)" }}>
+                <button
+                  key={s.key}
+                  className={`symptom-btn ${active ? "symptom-btn--active" : "symptom-btn--inactive"}`}
+                  onClick={() => toggleSymptom(s.key)}
+                >
+                  <span className="symptom-emoji">{s.emoji}</span>
+                  <span className={`symptom-label ${active ? "symptom-label--active" : "symptom-label--inactive"}`}>
                     {s.label}
                   </span>
                 </button>
@@ -236,19 +238,18 @@ export default function DayByDayView({ initialDay, onBack }) {
         {/* Notes */}
         <Section icon="📝" title="Notes">
           <textarea
+            className="notes-textarea"
             placeholder="How are you feeling today? Any observations…"
             value={entry.notes || ""}
             onChange={e => update("notes", e.target.value)}
             rows={4}
-            style={{
-              ...inputStyle, resize: "none", lineHeight: 1.6, fontFamily: "Cormorant Garamond, serif",
-              fontSize: 15, fontStyle: "italic",
-            }}
+            style={inputStyle}
           />
         </Section>
 
-        <div style={{ height: 24 }} />
+        <div className="daybyday-spacer" />
       </div>
+
     </div>
   );
 }

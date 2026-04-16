@@ -1,111 +1,121 @@
-import { YEAR, MONTH, MOCK, bleedingColor, bleedingLabel, bioCard, bioLabel, bioValue, btnPrimaryStyle } from "../constants.js";
+import { YEAR, MONTH, bleedingColor, bleedingLabel, btnPrimaryStyle } from "../constants.js";
 import { useMonthStatus } from "../context/MonthStatusContext.jsx";
-
-import { useState, useEffect } from "react";
 import MucusIcon from "../components/MucusIcon.jsx";
+import "./DayOverview.css";
 
 export default function DayOverview({ day, onEdit }) {
   const { monthData, loading } = useMonthStatus();
 
   if (loading) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-        <p>Loading...</p>
+      <div className="overview-loading">
+        <p>Loading…</p>
       </div>
     );
   }
 
   if (!day) {
     return (
-      <div style={{ padding: "20px 20px 8px", textAlign: "center" }}>
-        <p style={{ color: "var(--text-muted)", fontSize: 14, fontStyle: "italic" }}>
-          Select a day to view its overview
-        </p>
-      </div>
+      <p className="overview-empty-prompt">
+        Select a day to view its overview
+      </p>
     );
   }
 
-  const entry = monthData[day];
-  const dateLabel = new Date(YEAR, MONTH, day).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const entry     = monthData[day];
+  const dateLabel = new Date(YEAR, MONTH, day).toLocaleDateString("en-US", {
+    weekday: "long",
+    month:   "long",
+    day:     "numeric",
+  });
 
   return (
-    <div style={{ padding: "0 16px 16px" }}>
+    <div className="overview-wrap">
+
       {/* Day header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-        <div>
-          <h3 style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 20, fontWeight: 500, color: "var(--burgundy)" }}>
-            {dateLabel}
-          </h3>
-        </div>
-        <button onClick={() => onEdit(day)} style={{
-          background: "var(--parchment)", border: "1px solid var(--gold-light)",
-          borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 700,
-          color: "var(--rose-deep)", cursor: "pointer", letterSpacing: 0.5,
-        }}>
+      <div className="overview-header">
+        <h3 className="overview-date-label">{dateLabel}</h3>
+        <button className="overview-edit-btn" onClick={() => onEdit(day)}>
           Edit ✏️
         </button>
       </div>
 
       {entry ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {/* Biomarkers row */}
-          <div style={{ display: "flex", gap: 10 }}>
+        <div className="overview-content">
+
+          {/* Biomarker cards */}
+          <div className="bio-row">
+
             {/* BBT */}
-            <div style={bioCard}>
-              <span style={bioLabel}>🌡️ BBT</span>
-              <span style={bioValue}>{entry.bbt ? `${entry.bbt}°F` : "—"}</span>
-            </div>
-            {/* Mucus */}
-            <div style={bioCard}>
-              <span style={bioLabel}>💧 Mucus</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                {entry.mucus
-                  ? <><MucusIcon type={entry.mucus} size={18} />
-                      <span style={{ ...bioValue, fontSize: 12 }}>{entry.mucus}</span></>
-                  : <span style={bioValue}>—</span>
-                }
-              </div>
-            </div>
-            {/* Bleeding */}
-            <div style={bioCard}>
-              <span style={bioLabel}>🩸 Bleeding</span>
-              <span style={{ ...bioValue, color: entry.bleeding ? bleedingColor[entry.bleeding] : "var(--text-muted)" }}>
-                {entry.bleeding ? bleedingLabel[entry.bleeding] : "None"}
+            <div className="bio-card">
+              <span className="bio-label">🌡️ BBT</span>
+              <span className="bio-value">
+                {entry.bbt ? `${entry.bbt}°F` : <span className="bio-value--muted">—</span>}
               </span>
             </div>
+
+            {/* Mucus */}
+            <div className="bio-card">
+              <span className="bio-label">💧 Mucus</span>
+              {entry.mucus ? (
+                <div className="bio-mucus-inner">
+                  <MucusIcon type={entry.mucus} size={18} />
+                  <span className="bio-value">{entry.mucus}</span>
+                </div>
+              ) : (
+                <span className="bio-value bio-value--muted">—</span>
+              )}
+            </div>
+
+            {/* Bleeding */}
+            <div className="bio-card">
+              <span className="bio-label">🩸 Bleeding</span>
+              <span
+                className="bio-value"
+                style={{ color: entry.bleeding ? bleedingColor[entry.bleeding] : undefined }}
+              >
+                {entry.bleeding ? bleedingLabel[entry.bleeding] : (
+                  <span className="bio-value--muted">None</span>
+                )}
+              </span>
+            </div>
+
           </div>
 
           {/* Symptoms */}
           {entry.symptoms?.length > 0 && (
-            <div style={{ background: "var(--parchment)", borderRadius: 10, padding: "10px 14px" }}>
-              <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>Symptoms</p>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <div className="overview-section">
+              <p className="overview-section-label">Symptoms</p>
+              <div className="symptom-chips">
                 {entry.symptoms.map(s => (
-                  <span key={s} style={{
-                    background: "var(--rose-light)", color: "var(--burgundy)",
-                    borderRadius: 20, padding: "3px 10px", fontSize: 12,
-                  }}>{s}</span>
+                  <span key={s} className="symptom-chip">{s}</span>
                 ))}
               </div>
             </div>
           )}
 
           {/* Notes */}
-          <div style={{ background: "var(--parchment)", borderRadius: 10, padding: "10px 14px" }}>
-            <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 4, letterSpacing: 1, textTransform: "uppercase" }}>Notes</p>
-            <p style={{ fontSize: 13, color: entry.notes ? "var(--text)" : "var(--text-muted)", fontStyle: entry.notes ? "normal" : "italic", lineHeight: 1.5 }}>
+          <div className="overview-section">
+            <p className="overview-section-label">Notes</p>
+            <p className={`overview-notes-text${entry.notes ? "" : " overview-notes-text--empty"}`}>
               {entry.notes || "No notes for this day."}
             </p>
           </div>
+
         </div>
       ) : (
-        <div style={{ background: "var(--parchment)", borderRadius: 10, padding: 16, textAlign: "center" }}>
-          <p style={{ color: "var(--text-muted)", fontSize: 13, fontStyle: "italic" }}>No data recorded for this day.</p>
-          <button onClick={() => onEdit(day)} style={{ ...btnPrimaryStyle, marginTop: 12, padding: "9px 20px", fontSize: 13 }}>
+        <div className="overview-no-entry">
+          <p>No data recorded for this day.</p>
+          <button
+            className={`overview-add-btn`}
+            style={btnPrimaryStyle}
+            onClick={() => onEdit(day)}
+          >
             Add Entry
           </button>
         </div>
       )}
+
     </div>
   );
 }
