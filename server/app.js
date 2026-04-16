@@ -12,6 +12,7 @@ import { dirname, join } from 'path';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import dbRoutes from './routes/dbRoutes.js';
+import bodyStatusRoutes from './routes/bodyStatusRoutes.js';
 
 // to get __dirname in ES6
 const __filename = fileURLToPath(import.meta.url);
@@ -22,8 +23,9 @@ console.log('Current file:', __filename)
 const app = express()
 
 connectDB();
+app.use(sessionMiddleware);
 
-app.use(express.static(join(__dirname, '../client/public')));
+app.use(express.static(join(__dirname, '../client/dist')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -31,12 +33,12 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'index.html'));
 })
-app.use(sessionMiddleware);
 
 
 app.use('/', sessionRoutes);
 app.use('/', authRoutes);
 app.use('/', dbRoutes);
+app.use('/', bodyStatusRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000')
