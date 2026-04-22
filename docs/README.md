@@ -173,7 +173,7 @@ month data is loaded `const { monthData, loading } = useMonthStatus();`
 The given day entry is passed to a variable, `const entry = monthData[day];` and the date label ("Tuesday, April 14" in the above image) is created:
 
 ```jsx
-const dateLabel = new Date(YEAR, MONTH, day).toLocaleDateString("en-US", {
+const dateLabel = new Date(year, month, day).toLocaleDateString("en-US", {
     weekday: "long",
     month:   "long",
     day:     "numeric",
@@ -231,6 +231,94 @@ return (
   );
 ```
 
+### Month Status Context Explanation
+
+In order for data to be consistently maintained throughout the program without recalling a bunch of documents from the database between each screen, a context is used called `MonthStatusContext.jsx`. This allows function `useMonthStatus()` to be called on whatever page necessary to get the data for a given month.
+
+The provider function for the context uses the `useCallback` hook with an async callback function passing the `year` and `month` variables provided to the `useMonthStatus` function to call the `getMonthStatus` script from `/client/src/scripts/api/getMonthStatus.js`. This connects to the backend and queries for the desired information (the array of key-object pairs for a given month for a specific user). It then returns the provider, containing the hooks `monthData`, `loading`, and `loadMonth`. 
+
+```jsx
+export function MonthStatusProvider({ children }) {
+  const [monthData, setMonthData] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async (year, month) => {
+    setLoading(true);
+    try {
+      const data = await getMonthStatus(year, month + 1);
+
+      if (data.empty) {
+        // console.log("No data returned for month status:", data.message);
+        setMonthData({});
+        return;
+      } else {
+        // console.log("Processing month status data:", data);
+        const map = {};
+        data.forEach(entry => {
+          const day = Number(entry.date.split("-")[2]);
+          map[day] = {
+            ...entry,
+            symptoms: typeof entry.symptoms === "string" && entry.symptoms.trim()
+              ? entry.symptoms.split(",").map(s => s.trim())
+              : [],
+          };
+        });
+        setMonthData(map);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load(YEAR, MONTH);
+  }, [load]);
+
+  return (
+    <MonthStatusContext.Provider value={{ monthData, loading, loadMonth: load }}>
+      {children}
+    </MonthStatusContext.Provider>
+  );
+}
+```
+**A few important things to note:**
+1. The snippet with `data.forEach` is where the returned `data` from `getMonthStatus` is turned into the key-object pair. The map object array is defined as empty before it is filled with a numeric dictionary where the key is the number of the day from the data object entry and the object linked to it is the rest of the entry.
+2. Notice the snippet `await getMonthStatus(year, month + 1)` and how `month` has 1 added to it. This is because months in JS are 0-indexed but the database stores them as 1-indexed.
+3. The way the backend passes symptoms to the front is through an comma-separated string. I'm not sure how we ended up making that happen, but here it is turned back into an array as it is meant to be. In the future, that needs to be changed and this snipped for symptoms removed. The above snippet for `symptoms` maps each entry into a new `symptoms` array. 
+
+**Here is an example of this in use:**
+
+In `CalendarView.jsx`, `viewMonth` and `viewYear` are stored as states using `useState` hooks. When these are changed in places such as the following code snippet:
+
+```jsx
+// Initially, the data is loaded with the current MONTH and YEAR via the useState and useEffect hooks
+const [viewMonth, setViewMonth] = useState(MONTH);
+const [viewYear, setViewYear] = useState(YEAR);
+const { monthData, loading, loadMonth } = useMonthStatus();
+              |
+              V
+// this button calls handleMonthChange with an increment
+<button onClick={() => handleMonthChange(1)} className="nav-arrow-side">→</button>
+              |
+              V
+//leads to the handleMonthChange function
+const handleMonthChange = (direction) => {
+    const newDate = new Date(viewYear, viewMonth + direction, 1);
+    setViewMonth(newDate.getMonth());
+    setViewYear(newDate.getFullYear());
+};
+              |
+              V
+// when the setViewMonth or setViewYear hooks are used and their respective states changed, useEffect is triggered
+useEffect(() => { 
+    // console.log("Month or year changed, loading month status for", viewYear, viewMonth + 1);
+    loadMonth(viewYear, viewMonth); // Load data for the current month/year when they change
+    onSelectDay(selectedDay, viewMonth, viewYear); // Pass month and year to parent when changing month
+}, [viewMonth, viewYear, loadMonth]);
+// This uses loadMonth from the MonthStatusContext.Provider which triggers the information to reload using the new month and/or year.
+// Now, monthData is something new, either it is empty because it is a month with no data or it possesses some data to show in the month.
+```
+
 ## Back-End
 
 ### Stack and File Config
@@ -271,6 +359,16 @@ app.use('/', bodyStatusRoutes);
 ```
 
 So, the server, when it recieves a request, will check in that order. 
+
+### Environment Variables
+The only environment variables utilized is `MONGO_URI` and `SESSION_SECRET`. Of course, not going to share those here, but if you're going to do a local boot of the project, you'll have to link it to your own MongoDB. dotenv is used to load these variables via `import dotenv/config` in `/server/app.js`. 
+
+These variables are stored in `/server/.env` and look as follows:
+```
+MONGO_URI=your_mongodb_connection_string
+SESSION_SECRET=your_secret_here
+```
+*(The session secret should be a long, random, unguessable string in any deployed environment.)*
 
 ### Database Definition and Mongoose Models
 
@@ -683,7 +781,6 @@ export async function logout(req, res)
 # Sections to Add to Documentation
 
 ## Front-End
-- MonthStatusContext.jsx internals, how it actually works
 - Edit flow, how the "edit" view actually works (how a user edits or adds an entry)
 - CSS/styling approach
 
@@ -692,7 +789,6 @@ export async function logout(req, res)
 - Other routes, like dbRoutes
 
 ## General
-- Environment variables
 - Known limitations or TODOs.
 
 (* = important next steps to document).
