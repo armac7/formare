@@ -14,6 +14,7 @@ export async function getMonthStatus(req, res) {
       
     const mm = String(month).padStart(2, "0");
 
+    // console.log(`Fetching month status for ${year}-${mm} for user ${username}`);
     // console.log(`Fetching body status for ${username} for ${year}-${mm}`);
     try {
         const bodyStatus = await BodyStatus.find({
@@ -21,6 +22,8 @@ export async function getMonthStatus(req, res) {
             username
         }).lean();
 
+        // console.log(`Found ${bodyStatus.length} entries for ${year}-${mm} for user ${username}`);
+      
         if (bodyStatus.length > 0) {
             const formatted = bodyStatus.map(entry => ({
                 date: entry.date,
@@ -36,7 +39,8 @@ export async function getMonthStatus(req, res) {
           
             return res.json(formatted);
         } else {
-            return res.status(404).json({ message: 'No body status found for the specified date' });
+            // console.log(`IN BODYSTATUSCONTROLLER.JS: No body status found for ${year}-${mm} for user ${username}`);
+          return res.status(404).json({ empty: true });
         }
     } catch (err) {
       console.error('Error fetching body status:', err);

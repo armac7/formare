@@ -3,8 +3,8 @@ import { useMonthStatus } from "../context/MonthStatusContext.jsx";
 import MucusIcon from "../components/MucusIcon.jsx";
 import "./DayOverview.css";
 
-export default function DayOverview({ day, onEdit }) {
-  const { monthData, loading } = useMonthStatus();
+export default function DayOverview({ day, month, year, onEdit }) {
+  const { monthData, loading } = useMonthStatus(month, year);
 
   if (loading) {
     return (
@@ -14,7 +14,7 @@ export default function DayOverview({ day, onEdit }) {
     );
   }
 
-  if (!day) {
+  if (!day || month >= MONTH + 1 || year > YEAR) {
     return (
       <p className="overview-empty-prompt">
         Select a day to view its overview
@@ -23,7 +23,7 @@ export default function DayOverview({ day, onEdit }) {
   }
 
   const entry     = monthData[day];
-  const dateLabel = new Date(YEAR, MONTH, day).toLocaleDateString("en-US", {
+  const dateLabel = new Date(year, month, day).toLocaleDateString("en-US", {
     weekday: "long",
     month:   "long",
     day:     "numeric",
