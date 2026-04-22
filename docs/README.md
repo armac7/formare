@@ -1,5 +1,20 @@
 # Formare Documentation
 
+## Table of Contents
+- [Front-End](#front-end)
+  - [React Render](#react-render)
+  - [App.jsx Functionality and Pages](#appjsx-functionality-and-pages)
+  - [Data Consistency](#data-consistency)
+  - [Data Presentation](#data-presentation)
+  - [Month Status Context Explanation](#month-status-context-explanation)
+- [Back-End](#back-end)
+  - [Stack and File Config](#stack-and-file-config)
+  - [Database Definition and Mongoose Models](#database-definition-and-mongoose-models)
+  - [Data Call Example](#data-call-example)
+  - [Database Design Explanation](#database-design-explanation)
+  - [Authentication Flow](#authentication-flow)
+  - [Environment Variables](#environment-variables)
+
 ## Front-End
 
 ### React Render
