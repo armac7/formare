@@ -60,6 +60,8 @@ export default function App() {
       <div className="app-shell">
         <DayByDayView
           initialDay={editDay}
+          month={selectedMonth}
+          year={selectedYear}
           onBack={() => setView("calendar")}
         />
       </div>

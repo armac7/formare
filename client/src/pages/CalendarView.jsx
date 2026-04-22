@@ -25,7 +25,7 @@ export default function CalendarView({ onSelectDay, selectedDay }) {
     // console.log("Month or year changed, loading month status for", viewYear, viewMonth + 1);
     loadMonth(viewYear, viewMonth); // Load data for the current month/year when they change
     onSelectDay(selectedDay, viewMonth, viewYear); // Pass month and year to parent when changing month
-  }, [viewMonth, viewYear, loadMonth, onSelectDay, selectedDay]);
+  }, [viewMonth, viewYear, loadMonth]);
 
   if (loading) return <div className="calendar-loading"><p>Loading…</p></div>;
 

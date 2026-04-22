@@ -11,11 +11,11 @@ import Section from "../components/Section.jsx";
 import MucusIcon from "../components/MucusIcon.jsx";
 import "./DayByDayView.css";
 
-export default function DayByDayView({ initialDay, onBack }) {
-  const daysInMonth = new Date(YEAR, MONTH + 1, 0).getDate();
+export default function DayByDayView({ initialDay, month, year, onBack }) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const [currentDay, setCurrentDay] = useState(initialDay || TODAY.getDate());
-  const data = useMonthStatus();
-  const { refetch } = useMonthStatus();
+  const data = useMonthStatus(year, month);
+  const { refetch } = useMonthStatus(year, month);
 
   const [localData, setLocalData] = useState(() => {
     const d = {};
@@ -56,22 +56,25 @@ export default function DayByDayView({ initialDay, onBack }) {
   }
 
   async function handleSave() {
+    console.log("Saving day status for", year, month + 1, "day", currentDay, "with data:", localData[currentDay]);
     const payload = Object.fromEntries(
       Object.entries(localData).map(([day, d]) => [
         day,
         {
           ...d,
-          date: d.date ?? `${YEAR}-${String(MONTH + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+          date: d.date ?? `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
         },
       ])
     );
+
+    console.log("Saving month status with payload:", payload);
     await saveMonthStatus(payload);
     await refetch();
     onBack();
   }
 
   const entry     = localData[currentDay] || {};
-  const weekday   = new Date(YEAR, MONTH, currentDay).toLocaleDateString("en-US", { weekday: "long" });
+  const weekday   = new Date(year, month, currentDay).toLocaleDateString("en-US", { weekday: "long" });
 
   return (
     <div className="daybyday-wrap">
@@ -80,7 +83,7 @@ export default function DayByDayView({ initialDay, onBack }) {
       <div className="daybyday-topbar">
         <button className="topbar-back-btn" onClick={onBack}>←</button>
         <div className="topbar-center">
-          <h2 className="topbar-title">{MONTH_NAMES[MONTH]} {currentDay}</h2>
+          <h2 className="topbar-title">{MONTH_NAMES[month]} {currentDay}</h2>
           <p className="topbar-weekday">{weekday}</p>
         </div>
         <button className="topbar-save-btn" onClick={handleSave}>Save</button>
@@ -89,7 +92,7 @@ export default function DayByDayView({ initialDay, onBack }) {
       {/* ── Day scroll strip ── */}
       <div className="day-scroll-strip" ref={scrollRef}>
         {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(d => {
-          const isFuture   = d > todayDate;
+          const isFuture   = d > todayDate && month >= MONTH && year >= YEAR;
           const isSelected = d === currentDay;
           const e          = localData[d];
           const hasBleed   = e?.bleeding && e.bleeding !== "None";
@@ -121,7 +124,7 @@ export default function DayByDayView({ initialDay, onBack }) {
               onClick={() => !isFuture && setCurrentDay(d)}
             >
               <span className="day-card-weekday" style={{ color: weekdayColor }}>
-                {new Date(YEAR, MONTH, d).toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()}
+                {new Date(year, month, d).toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()}
               </span>
               <span className="day-card-num" style={{ color: numColor }}>{d}</span>
             </div>
