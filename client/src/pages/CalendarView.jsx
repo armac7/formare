@@ -16,11 +16,16 @@ function useIsMobile(breakpoint = 768) {
 const BLEEDING_LEGEND = ["heavy", "medium", "light", "spotting", "brown"];
 
 export default function CalendarView({ onSelectDay, selectedDay }) {
-  const { monthData, loading } = useMonthStatus();
   const isMobile = useIsMobile();
-
   const [viewMonth, setViewMonth] = useState(MONTH);
   const [viewYear, setViewYear] = useState(YEAR);
+  const { monthData, loading, loadMonth } = useMonthStatus();
+  
+  useEffect(() => { 
+    // console.log("Month or year changed, loading month status for", viewYear, viewMonth + 1);
+    loadMonth(viewYear, viewMonth); // Load data for the current month/year when they change
+    onSelectDay(selectedDay, viewMonth, viewYear); // Pass month and year to parent when changing month
+  }, [viewMonth, viewYear, loadMonth, onSelectDay, selectedDay]);
 
   if (loading) return <div className="calendar-loading"><p>Loading…</p></div>;
 
@@ -33,11 +38,12 @@ export default function CalendarView({ onSelectDay, selectedDay }) {
   // ── WEEK START: SUNDAY (Standard) ──
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const firstDayIndex = new Date(viewYear, viewMonth, 1).getDay(); // 0 is Sunday
-
+  
   // No shift needed for Sunday start
   const displayDaysOfWeek = DAYS_OF_WEEK;
-
+  
   const isCurrentMonth = viewMonth === TODAY.getMonth() && viewYear === TODAY.getFullYear();
+  const todayDate = isCurrentMonth ? TODAY.getDate() : null;
 
   const cells = [];
   for (let i = 0; i < firstDayIndex; i++) cells.push(null);
@@ -50,19 +56,77 @@ export default function CalendarView({ onSelectDay, selectedDay }) {
     return "past";
   }
 
-  // ... (getDynamicStyles and Legend components remain as they were in your original file)
+  function getDynamicStyles(d) {
+    // console.log("Calculating styles for day", d, "with entry", monthData[d]);
+    const state = dayState(d);
+    const entry        = monthData[d];
+    const bleeding     = entry?.bleeding;
+    const isProjPeriod = MOCK.projectedPeriod.includes(d);
+    const isSelected   = selectedDay === d && state !== "future";
+    const isToday = d === todayDate && state !== "future";
+    // console.log(`Day ${d} - State: ${state}, Bleeding: ${bleeding}, Projected: ${isProjPeriod}, Selected: ${isSelected}, Today: ${isToday}`);
+
+    let background = "transparent";
+    let color      = "var(--text)";
+    let border     = "2px solid transparent";
+    let fontWeight = 400;
+
+    if (state === "future")                 { color = "var(--future-grey)"; }
+    if (bleeding && bleeding !== "None")    { background = bleedingColor[bleeding]; color = bleeding === "spotting" ? "var(--burgundy)" : "white"; }
+    if (isProjPeriod && state === "future") { border = "2px dashed var(--rose)"; color = "var(--rose)"; }
+    if (isSelected)                         { border = "2px solid var(--burgundy)"; }
+    if (isToday && !isSelected)             { border = "2px solid var(--gold)"; }
+    if (isToday)                            { fontWeight = 700; }
+
+    return { cellStyle: { background, border }, numStyle: { color, fontWeight } };
+  }
+
+  const Legend = () => (
+    <div className="calendar-legend">
+      {BLEEDING_LEGEND.map(key => (
+        <div key={key} className="legend-item">
+          <span className="legend-dot" style={{ background: bleedingColor[key] }} />
+          <span className="legend-label">
+            {key.charAt(0).toUpperCase() + key.slice(1)}
+          </span>
+        </div>
+      ))}
+      <div className="legend-item">
+        <span className="legend-dot" style={{ background: "transparent", border: "2px dashed var(--rose)" }} />
+        <span className="legend-label">Projected</span>
+      </div>
+    </div>
+  );
 
   const GridCells = () => cells.map((d, i) => {
     if (!d) return <div key={`e-${i}`} />;
     const state = dayState(d);
+    const entry = monthData[d];
+    // console.log(`Rendering cell for day ${d} with state ${state} and entry:`, entry);
+    const { cellStyle, numStyle } = getDynamicStyles(d);
+
+    const cellClass = [
+      "cal-cell",
+      state === "future" ? "cal-cell--future" : "cal-cell--clickable",
+    ].join(" ");
+
     // Logic for styles remains same, using viewYear/viewMonth for context
     return (
       <div
         key={d}
-        className={`cal-cell ${state === "future" ? "cal-cell--future" : "cal-cell--clickable"}`}
+        className={cellClass}
+        style={cellStyle}
         onClick={() => state !== "future" && onSelectDay(d, viewMonth, viewYear)}
       >
-        <span className="cal-day-num">{d}</span>
+        <span className="cal-day-num" style={numStyle}>{d}</span>
+        {entry?.bbt && (
+          <span className="bbt-dot"
+            style={{ background: entry.bbt > 97.7 ? "var(--gold)" : "var(--sage)" }}
+          />
+        )}
+        {entry?.bbt && (
+          <span className="bbt-label">{entry.bbt}°</span>
+        )}
       </div>
     );
   });
