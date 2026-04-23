@@ -7,6 +7,13 @@
 This app is designed primarily for **cycle awareness and health tracking**, not pregnancy avoidance or contraception planning.
 
 ---
+## 👤 User Story
+
+> 🌸 As a **Catholic woman** seeking to understand my body's natural rhythms,
+> I want to **log my daily biomarkers** — basal body temperature, cervical mucus, and bleeding patterns,
+> so that I can **grow in fertility literacy and body awareness** in a way that aligns with my faith and values.
+
+---
 
 ## 🚧 Project Status Dashboard
 
