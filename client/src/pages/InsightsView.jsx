@@ -14,7 +14,7 @@ export default function InsightsView({day, month, year}) {
   // ── Summary stats from current month ──
   const entries = Object.values(monthData);
   const loggedDays = entries.length;
-  const bleedingDays = entries.filter(e => e.bleeding && e.bleeding !== "none").length;
+  const bleedingDays = entries.filter(e => e.bleeding && e.bleeding !== "None").length;
   const bbtReadings = entries.filter(e => e.bbt).map(e => e.bbt);
   const avgBBT = bbtReadings.length
     ? (bbtReadings.reduce((a, b) => a + b, 0) / bbtReadings.length).toFixed(2)
