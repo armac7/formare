@@ -53,10 +53,34 @@ export const bleedingLabel = {
 
 // ─── Edit View Options ────────────────────────────────────────────────────────
 export const SYMPTOM_OPTIONS = [
-  { key: "headache", emoji: "🤕", label: "Headache" },
-  { key: "backache", emoji: "🪑", label: "Backache" },
-  { key: "fatigue",  emoji: "😴", label: "Fatigue" },
-  { key: "mood",     emoji: "😌", label: "Mood Changes" },
+  
+  // Physical symptoms
+  { key: "headache", emoji: "🤕", label: "Headache", type: "physical" },
+  { key: "backache", emoji: "🪑", label: "Backache", type: "physical" },
+  { key: "fatigue", emoji: "😴", label: "Fatigue", type: "physical" },
+  { key: "acne", emoji: "🧴", label: "Acne", type: "physical" },
+  { key: "bloating", emoji: "🎈", label: "Bloating", type: "physical" },
+  { key: "breast_tenderness", emoji: "💢", label: "Breast Tenderness", type: "physical" },
+  { key: "cramping", emoji: "⚡", label: "Cramping", type: "physical" },
+  { key: "constipation", emoji: "🚫", label: "Constipation", type: "physical" },
+  { key: "increased_libido", emoji: "🔥", label: "Increased Libido", type: "physical" },
+  { key: "migraine", emoji: "🌩️", label: "Migraine", type: "physical" },
+  { key: "nausea", emoji: "🤢", label: "Nausea", type: "physical" },
+  { key: "pms", emoji: "📅", label: "PMS", type: "physical" },
+  { key: "illness", emoji: "🤒", label: "Illness", type: "physical" },
+  { key: "decreased_appetite", emoji: "🍽️", label: "Decreased Appetite", type: "physical" },
+  { key: "joint_muscle_pain", emoji: "🦴", label: "Joint/Muscle Pain", type: "physical" },
+  { key: "increased_appetite", emoji: "🍔", label: "Increased Appetite", type: "physical" },
+  
+  // Emotional symptoms
+  { key: "anxious", emoji: "😟", label: "Anxious", type: "emotional" },
+  { key: "lethargic", emoji: "🫠", label: "Lethargic", type: "emotional" },
+  { key: "energetic", emoji: "⚡", label: "Energetic", type: "emotional" },
+  { key: "irritable", emoji: "😠", label: "Irritable", type: "emotional" },
+  { key: "sad", emoji: "😢", label: "Sad", type: "emotional" },
+  { key: "stressed", emoji: "😣", label: "Stressed", type: "emotional" },
+  { key: "social_withdrawal", emoji: "🚪", label: "Social Withdrawal", type: "emotional" },
+  { key: "mood_swings", emoji: "🎭", label: "Mood Swings", type: "emotional" },
 ];
 
 export const MUCUS_OPTIONS = ["dry", "moist", "wet", "slippery", "wet/slippery"];

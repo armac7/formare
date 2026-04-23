@@ -41,7 +41,7 @@ export function MonthStatusProvider({ children }) {
   }, [load]);
 
   return (
-    <MonthStatusContext.Provider value={{ monthData, loading, loadMonth: load }}>
+    <MonthStatusContext.Provider value={{ monthData, loading, loadMonth: load, refetch: () => load(YEAR, MONTH) }}>
       {children}
     </MonthStatusContext.Provider>
   );

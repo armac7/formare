@@ -14,14 +14,13 @@ import "./DayByDayView.css";
 export default function DayByDayView({ initialDay, month, year, onBack }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const [currentDay, setCurrentDay] = useState(initialDay || TODAY.getDate());
-  const data = useMonthStatus(year, month);
-  const { refetch } = useMonthStatus(year, month);
+  const { monthData, loadMonth } = useMonthStatus(year, month);
 
   const [localData, setLocalData] = useState(() => {
     const d = {};
     for (let i = 1; i <= daysInMonth; i++) {
-      d[i] = data.monthData[i]
-        ? { ...data.monthData[i], symptoms: [...(data.monthData[i].symptoms || [])] }
+      d[i] = monthData[i]
+        ? { ...monthData[i], symptoms: [...(monthData[i].symptoms || [])] }
         : { bbt: null, bleeding: null, mucus: null, mucusCharacteristic: null, symptoms: [], notes: "" };
     }
     return d;
@@ -56,7 +55,10 @@ export default function DayByDayView({ initialDay, month, year, onBack }) {
   }
 
   async function handleSave() {
-    console.log("Saving day status for", year, month + 1, "day", currentDay, "with data:", localData[currentDay]);
+    // console.log("saveMonthStatus:", typeof saveMonthStatus);
+    // console.log("refetch:", typeof refetch);
+    // console.log("onBack:", typeof onBack);
+    // console.log("Saving day status for", year, month + 1, "day", currentDay, "with data:", localData[currentDay]);
     const payload = Object.fromEntries(
       Object.entries(localData).map(([day, d]) => [
         day,
@@ -67,9 +69,9 @@ export default function DayByDayView({ initialDay, month, year, onBack }) {
       ])
     );
 
-    console.log("Saving month status with payload:", payload);
+    // console.log("Saving month status with payload:", payload);
     await saveMonthStatus(payload);
-    await refetch();
+    await loadMonth(year, month);
     onBack();
   }
 
@@ -219,23 +221,28 @@ export default function DayByDayView({ initialDay, month, year, onBack }) {
 
         {/* Secondary Symptoms */}
         <Section icon="🧩" title="Secondary Symptoms">
-          <div className="symptoms-grid">
-            {SYMPTOM_OPTIONS.map(s => {
-              const active = (entry.symptoms || []).includes(s.key);
-              return (
-                <button
-                  key={s.key}
-                  className={`symptom-btn ${active ? "symptom-btn--active" : "symptom-btn--inactive"}`}
-                  onClick={() => toggleSymptom(s.key)}
-                >
-                  <span className="symptom-emoji">{s.emoji}</span>
-                  <span className={`symptom-label ${active ? "symptom-label--active" : "symptom-label--inactive"}`}>
-                    {s.label}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          {["physical", "emotional"].map(type => (
+            <div key={type}>
+              <p className="overview-section-sublabel" style={{ textTransform: "capitalize" }}>{type}</p>
+              <div className="symptoms-grid">
+                {SYMPTOM_OPTIONS.filter(s => s.type === type).map(s => {
+                  const active = (entry.symptoms || []).includes(s.key);
+                  return (
+                    <button
+                      key={s.key}
+                      className={`symptom-btn ${active ? "symptom-btn--active" : "symptom-btn--inactive"}`}
+                      onClick={() => toggleSymptom(s.key)}
+                    >
+                      <span className="symptom-emoji">{s.emoji}</span>
+                      <span className={`symptom-label ${active ? "symptom-label--active" : "symptom-label--inactive"}`}>
+                        {s.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </Section>
 
         {/* Notes */}
