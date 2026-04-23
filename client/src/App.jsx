@@ -104,7 +104,10 @@ export default function App() {
               </div>
             </>
           )}
-          {activeTab === "insights" && <InsightsView />}
+          {activeTab === "insights" && <InsightsView 
+                  day={selectedDay}
+                  month={selectedMonth}
+                  year={selectedYear}/>}
           {activeTab === "profile"  && <ProfileView user={user} onLogout={handleLogout} />}
         </main>
 
