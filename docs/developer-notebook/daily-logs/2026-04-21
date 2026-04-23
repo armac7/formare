@@ -1,0 +1,19 @@
+# Fixing Calendar to Show All Months
+
+## Problem
+Originally, the calendar component only displayed **April** and did not allow switching between months.  
+This happened because the calendar relied on fixed constants:
+
+- `MONTH`
+- `YEAR`
+
+These values were static, so the calendar never updated.
+
+---
+
+## Root Cause
+The issue came from this logic:
+
+```js
+const daysInMonth   = new Date(YEAR, MONTH + 1, 0).getDate();
+const firstDayIndex = new Date(YEAR, MONTH, 1).getDay();
