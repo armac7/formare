@@ -13,6 +13,27 @@ This app is designed primarily for **cycle awareness and health tracking**, not 
 I want to **log my daily biomarkers** — basal body temperature, cervical mucus, and bleeding patterns, <br>
 so that I can **grow in fertility literacy and body awareness** in a way that aligns with my faith and values.
 
+
+## 🎯 Intended Audience
+
+Formare is designed for:
+
+- Catholics practicing cycle awareness
+- users learning fertility literacy
+- women tracking hormonal health patterns
+- couples practicing Natural Family Planning supportively
+- developers interested in ethical health tech
+
+## Problem Solved
+Many modern cycle tracking apps are built around secular audiences, in which case the applications often are cold and sterile in the way in which sex is treated. They orient mindsets towards sex which cultivate it as recreational, and cycles a thing to be tracked for the sake of it in order to prevent pregnancy. They often contain features for contraceptive usage and the likes, which contradict the plan which God has for marriage as well as the female body. As a result, they often treat fertility as something to manage or suppress rather than understand, and they frequently frame the body in ways disconnected from the meaning of marriage, sexuality, and openness to life.
+
+Formare seeks to fill that gap. The app is built with Catholic theology in mind and is oriented toward helping users grow in awareness of the body, interpret fertility through Natural Family Planning (NFP), and live out an integrated understanding of human embodiment. Rather than treating cycle tracking as merely predictive or preventative, Formare supports users in approaching fertility as something meaningful, intelligible, and ordered toward love and life.
+
+Inspired by the Theology of the Body of Pope John Paul II, Formare aims to help translate theological insight into daily practice.
+
+*"Motherhood involves a special communion with the mystery of life, as it develops in the woman's womb."* <br>
+-- Mulieris Dignitatem, §18 (1988)
+
 ---
 
 ## 🚧 Project Status Dashboard
@@ -33,11 +54,11 @@ Upcoming milestones:
 
 [(Sprint 2)](https://github.com/armac7/formare/milestone/2)
 - [ ] [Cycle calculation engine](https://github.com/armac7/formare/issues/13)
-- [ ] [Secondary biomarker entry system](https://github.com/armac7/formare/issues/14)
+- [x] [Secondary biomarker entry system](https://github.com/armac7/formare/issues/14)
 - [x] [View Different Months and Prior Years on Calendar and Day-by-Day Screens](https://github.com/armac7/formare/issues/15)
 
 [(Sprint 3)](https://github.com/armac7/formare/milestone/3)
-- [ ] [AI integration for Daily Insights feature](https://github.com/armac7/formare/issues/16)
+- [x] [AI integration for Daily Insights feature](https://github.com/armac7/formare/issues/16)
 - [ ] [Chart view](https://github.com/armac7/formare/issues/17)
 
 ---
@@ -69,14 +90,18 @@ Optional symptom tracking includes:
 
 Formare provides:
 
-- Estimated fertile window indicators
-- Estimated cycle phase tracking
-- Period predictions based on historical data
 - Long-term cycle pattern visibility
+- Estimated period window prediction
+- Notes for cycle journaling
 
 ⚠️ Predictions are informational only and **not intended for pregnancy planning decisions**
 
 ---
+
+## Value Proposition
+Many cycle tracking applications are overstimulating with dozens of screens, a thousand icons, and so on, all of which make for a good look, but ultimately make the application over stimulating. Formare betters that by using more neutral colors, minimal screens, and straight forward content. In other apps, there is often information overload on each screen, which can get confusing, especially for newer users. 
+
+Information is streamlined, simple and straightforward, easily accessible, and avoids being overstimulating or too dense.
 
 ## ✝️ Mission & Philosophy
 
@@ -97,27 +122,22 @@ Planned / current stack:
 
 **Frontend**
 - HTML / CSS / JavaScript
-- (Future: React)
+- React
+- React Context API
 
 **Backend**
 - Node.js
 - Express.js
-- Mongoose
+- express-session
+- dotenv
 
 **Database**
 - MongoDB
+- Mongoose
 
----
-
-## 🎯 Intended Audience
-
-Formare is designed for:
-
-- Catholics practicing cycle awareness
-- users learning fertility literacy
-- women tracking hormonal health patterns
-- couples practicing Natural Family Planning supportively
-- developers interested in ethical health tech
+**Deployment**
+- GCP
+- Render
 
 ---
 
@@ -135,7 +155,8 @@ It is a **cycle awareness companion app only**
 
 ## 🤝 Future Planned Features
 
-- UI/UX improvements
+### [Sprint 99](https://github.com/armac7/formare/milestone/5)
+
 - biomarker analytics logic
 - chart visualization tools
 - localization support
