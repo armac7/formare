@@ -9,9 +9,9 @@ This app is designed primarily for **cycle awareness and health tracking**, not 
 ---
 ## 👤 User Story
 
-> 🌸 As a **Catholic woman** seeking to understand my body's natural rhythms,
-> I want to **log my daily biomarkers** — basal body temperature, cervical mucus, and bleeding patterns,
-> so that I can **grow in fertility literacy and body awareness** in a way that aligns with my faith and values.
+🌸 As a **Catholic woman** seeking to understand my body's natural rhythms, <br>
+I want to **log my daily biomarkers** — basal body temperature, cervical mucus, and bleeding patterns, <br>
+so that I can **grow in fertility literacy and body awareness** in a way that aligns with my faith and values.
 
 ---
 
