@@ -1,10 +1,20 @@
 import { YEAR, MONTH, SYMPTOM_OPTIONS, bleedingColor, bleedingLabel, btnPrimaryStyle } from "../constants.js";
 import { useMonthStatus } from "../context/MonthStatusContext.jsx";
+import { useAIInsight } from "../hooks/useAIInsight.js";
 import MucusIcon from "../components/MucusIcon.jsx";
 import "./DayOverview.css";
 
 export default function DayOverview({ day, month, year, onEdit }) {
   const { monthData, loading } = useMonthStatus(month, year);
+  const entry = monthData?.[day];
+
+  // ── AI Insight ──
+  const {
+    insight,
+    loading: insightLoading,
+    error:   insightError,
+    refetch: refetchInsight,
+  } = useAIInsight(day, month, year, entry);
 
   if (loading) {
     return (
@@ -22,7 +32,6 @@ export default function DayOverview({ day, month, year, onEdit }) {
     );
   }
 
-  const entry     = monthData[day];
   const dateLabel = new Date(year, month, day).toLocaleDateString("en-US", {
     weekday: "long",
     month:   "long",
@@ -90,21 +99,21 @@ export default function DayOverview({ day, month, year, onEdit }) {
             const renderChips = (keys) => keys.map(s => {
               const opt = SYMPTOM_OPTIONS.find(o => o.key === s);
               return (
-                <span key={s} className="symptom-chip">{opt?.emoji} {opt?.label ?? s.replaceAll("_", " ")}</span>
+                <span key={s} className="symptom-chip">
+                  {opt?.emoji} {opt?.label ?? s.replaceAll("_", " ")}
+                </span>
               );
             });
 
             return (
               <div className="overview-section">
                 <p className="overview-section-label">Symptoms</p>
-
                 {physical.length > 0 && (
                   <>
                     <p className="overview-section-sublabel">Physical</p>
                     <div className="symptom-chips">{renderChips(physical)}</div>
                   </>
                 )}
-
                 {emotional.length > 0 && (
                   <>
                     <p className="overview-section-sublabel">Emotional</p>
@@ -123,12 +132,52 @@ export default function DayOverview({ day, month, year, onEdit }) {
             </p>
           </div>
 
+          {/* ── AI Insight ── */}
+          <div className="insight-section">
+            <div className="insight-header">
+              <span className="insight-title">✨ Daily Insight</span>
+              <button
+                className="insight-refresh-btn"
+                onClick={refetchInsight}
+                disabled={insightLoading}
+                title="Refresh insight"
+              >
+                {insightLoading ? "…" : "↻"}
+              </button>
+            </div>
+
+            {insightLoading && (
+              <div className="insight-loading">
+                <span className="insight-loading-dot" />
+                <span className="insight-loading-dot" />
+                <span className="insight-loading-dot" />
+              </div>
+            )}
+
+            {insightError && !insightLoading && (
+              <div className="insight-error">
+                <p>{insightError}</p>
+                <button className="insight-retry-btn" onClick={refetchInsight}>
+                  Try again
+                </button>
+              </div>
+            )}
+
+            {insight && !insightLoading && (
+              <p className="insight-text">{insight}</p>
+            )}
+
+            {!insight && !insightLoading && !insightError && (
+              <p className="insight-empty">No insight available for this day.</p>
+            )}
+          </div>
+
         </div>
       ) : (
         <div className="overview-no-entry">
           <p>No data recorded for this day.</p>
           <button
-            className={`overview-add-btn`}
+            className="overview-add-btn"
             style={btnPrimaryStyle}
             onClick={() => onEdit(day)}
           >

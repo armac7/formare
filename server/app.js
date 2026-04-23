@@ -2,6 +2,7 @@
 import sessionMiddleware from './middleware/session.js';
 import sessionRoutes from './routes/sessionRoutes.js'
 import { requiredAuth } from './middleware/session.js';
+import insightRoutes from './routes/insightRoute.js';
 
 import 'dotenv/config'; 
 import express from 'express';
@@ -39,6 +40,7 @@ app.use('/', sessionRoutes);
 app.use('/', authRoutes);
 app.use('/', dbRoutes);
 app.use('/', bodyStatusRoutes);
+app.use('/', insightRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000')
