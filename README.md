@@ -58,7 +58,7 @@ Upcoming milestones:
 - [x] [View Different Months and Prior Years on Calendar and Day-by-Day Screens](https://github.com/armac7/formare/issues/15)
 
 [(Sprint 3)](https://github.com/armac7/formare/milestone/3)
-- [ ] [AI integration for Daily Insights feature](https://github.com/armac7/formare/issues/16)
+- [x] [AI integration for Daily Insights feature](https://github.com/armac7/formare/issues/16)
 - [ ] [Chart view](https://github.com/armac7/formare/issues/17)
 
 ---
