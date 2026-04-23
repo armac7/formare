@@ -12,23 +12,22 @@ This app is designed primarily for **cycle awareness and health tracking**, not 
 
 Currently in:
 
-> 🏗️ Early development
+> 🔨 Active Development — Sprint 2 in Progress
 
 Upcoming milestones:
 
 [(Sprint 1)](https://github.com/armac7/formare/milestone/1)
 - [x] [Database Schema](https://github.com/armac7/formare/issues/9)
 - [x] [Front End UI/UX Design](https://github.com/armac7/formare/issues/10)
-- [ ] [Front End UI/UX Implementation](https://github.com/armac7/formare/issues/11)
-- [ ] [Primary biomarker entry system](https://github.com/armac7/formare/issues/12)
-- [ ] [Day-by-day notes entry system](https://github.com/armac7/formare/issues/12)
-- [ ] User authentication
+- [x] [Front End UI/UX Implementation](https://github.com/armac7/formare/issues/11)
+- [x] [Primary biomarker entry system](https://github.com/armac7/formare/issues/12)
+- [x] [Day-by-day notes entry system](https://github.com/armac7/formare/issues/12)
+- [x] User authentication
 
 [(Sprint 2)](https://github.com/armac7/formare/milestone/2)
 - [ ] [Cycle calculation engine](https://github.com/armac7/formare/issues/13)
 - [ ] [Secondary biomarker entry system](https://github.com/armac7/formare/issues/14)
-- [ ] [Mobile-friendly UI](https://github.com/armac7/formare/issues/15)
-- [ ] Historical tracking view
+- [x] [View Different Months and Prior Years on Calendar and Day-by-Day Screens](https://github.com/armac7/formare/issues/15)
 
 [(Sprint 3)](https://github.com/armac7/formare/milestone/3)
 - [ ] [AI integration for Daily Insights feature](https://github.com/armac7/formare/issues/16)

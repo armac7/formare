@@ -8,32 +8,40 @@ export function MonthStatusProvider({ children }) {
   const [monthData, setMonthData] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (year, month) => {
     setLoading(true);
     try {
-      const data = await getMonthStatus(YEAR, MONTH + 1);
-      const map = {};
-      data.forEach(entry => {
-        const day = Number(entry.date.split("-")[2]);
-        map[day] = {
-          ...entry,
-          symptoms: typeof entry.symptoms === "string" && entry.symptoms.trim()
-            ? entry.symptoms.split(",").map(s => s.trim())
-            : [],
-        };
-      });
-      setMonthData(map);
+      const data = await getMonthStatus(year, month + 1);
+
+      if (data.empty) {
+        // console.log("No data returned for month status:", data.message);
+        setMonthData({});
+        return;
+      } else {
+        // console.log("Processing month status data:", data);
+        const map = {};
+        data.forEach(entry => {
+          const day = Number(entry.date.split("-")[2]);
+          map[day] = {
+            ...entry,
+            symptoms: typeof entry.symptoms === "string" && entry.symptoms.trim()
+              ? entry.symptoms.split(",").map(s => s.trim())
+              : [],
+          };
+        });
+        setMonthData(map);
+      }
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    load();
+    load(YEAR, MONTH);
   }, [load]);
 
   return (
-    <MonthStatusContext.Provider value={{ monthData, loading, refetch: load }}>
+    <MonthStatusContext.Provider value={{ monthData, loading, loadMonth: load, refetch: () => load(YEAR, MONTH) }}>
       {children}
     </MonthStatusContext.Provider>
   );

@@ -16,6 +16,8 @@ export default function App() {
   const [view,        setView]        = useState("calendar");
   const [activeTab,   setActiveTab]   = useState("calendar");
   const [selectedDay, setSelectedDay] = useState(TODAY.getDate());
+  const [selectedMonth, setSelectedMonth] = useState(TODAY.getMonth());
+  const [selectedYear, setSelectedYear] = useState(TODAY.getFullYear());
   const [editDay,     setEditDay]     = useState(null);
   const [loading,     setLoading]     = useState(true);
 
@@ -46,6 +48,7 @@ export default function App() {
       }
     }
     checkAuth();
+
   }, []);
 
   if (loading) return <div className="app-loading">Loading…</div>;
@@ -57,6 +60,8 @@ export default function App() {
       <div className="app-shell">
         <DayByDayView
           initialDay={editDay}
+          month={selectedMonth}
+          year={selectedYear}
           onBack={() => setView("calendar")}
         />
       </div>
@@ -82,12 +87,18 @@ export default function App() {
             <>
               <CalendarView
                 selectedDay={selectedDay}
-                onSelectDay={d => setSelectedDay(d)}
+                onSelectDay={(d, month, year) => {
+                  setSelectedDay(d)
+                  setSelectedMonth(month);
+                  setSelectedYear(year);
+                }}
               />
               <div className="calendar-divider" />
               <div className="day-overview-tab">
                 <DayOverview
                   day={selectedDay}
+                  month={selectedMonth}
+                  year={selectedYear}
                   onEdit={d => { setEditDay(d); setView("edit"); }}
                 />
               </div>

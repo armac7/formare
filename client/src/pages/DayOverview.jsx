@@ -1,10 +1,10 @@
-import { YEAR, MONTH, bleedingColor, bleedingLabel, btnPrimaryStyle } from "../constants.js";
+import { YEAR, MONTH, SYMPTOM_OPTIONS, bleedingColor, bleedingLabel, btnPrimaryStyle } from "../constants.js";
 import { useMonthStatus } from "../context/MonthStatusContext.jsx";
 import MucusIcon from "../components/MucusIcon.jsx";
 import "./DayOverview.css";
 
-export default function DayOverview({ day, onEdit }) {
-  const { monthData, loading } = useMonthStatus();
+export default function DayOverview({ day, month, year, onEdit }) {
+  const { monthData, loading } = useMonthStatus(month, year);
 
   if (loading) {
     return (
@@ -14,7 +14,7 @@ export default function DayOverview({ day, onEdit }) {
     );
   }
 
-  if (!day) {
+  if (!day || month >= MONTH + 1 || year > YEAR) {
     return (
       <p className="overview-empty-prompt">
         Select a day to view its overview
@@ -23,7 +23,7 @@ export default function DayOverview({ day, onEdit }) {
   }
 
   const entry     = monthData[day];
-  const dateLabel = new Date(YEAR, MONTH, day).toLocaleDateString("en-US", {
+  const dateLabel = new Date(year, month, day).toLocaleDateString("en-US", {
     weekday: "long",
     month:   "long",
     day:     "numeric",
@@ -83,16 +83,37 @@ export default function DayOverview({ day, onEdit }) {
           </div>
 
           {/* Symptoms */}
-          {entry.symptoms?.length > 0 && (
-            <div className="overview-section">
-              <p className="overview-section-label">Symptoms</p>
-              <div className="symptom-chips">
-                {entry.symptoms.map(s => (
-                  <span key={s} className="symptom-chip">{s}</span>
-                ))}
+          {entry.symptoms?.length > 0 && (() => {
+            const physical  = entry.symptoms.filter(s => SYMPTOM_OPTIONS.find(o => o.key === s && o.type === "physical"));
+            const emotional = entry.symptoms.filter(s => SYMPTOM_OPTIONS.find(o => o.key === s && o.type === "emotional"));
+
+            const renderChips = (keys) => keys.map(s => {
+              const opt = SYMPTOM_OPTIONS.find(o => o.key === s);
+              return (
+                <span key={s} className="symptom-chip">{opt?.emoji} {opt?.label ?? s.replaceAll("_", " ")}</span>
+              );
+            });
+
+            return (
+              <div className="overview-section">
+                <p className="overview-section-label">Symptoms</p>
+
+                {physical.length > 0 && (
+                  <>
+                    <p className="overview-section-sublabel">Physical</p>
+                    <div className="symptom-chips">{renderChips(physical)}</div>
+                  </>
+                )}
+
+                {emotional.length > 0 && (
+                  <>
+                    <p className="overview-section-sublabel">Emotional</p>
+                    <div className="symptom-chips">{renderChips(emotional)}</div>
+                  </>
+                )}
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Notes */}
           <div className="overview-section">
