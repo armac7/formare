@@ -52,7 +52,6 @@ export async function editBodyStatus(req, res) {
   if (!req.session.user) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
-
   const { username } = req.session.user;
   const { monthData } = req.body;
 

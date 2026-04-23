@@ -187,6 +187,31 @@
     /* remove bottom padding — it's in the header on desktop */
   }
 
+  .nav-arrow-side {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--burgundy);
+    font-size: 26px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    line-height: 1;
+    transition: transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--parchment, #fdf6f0);
+  }
+
+.nav-arrow-side:hover {
+  transform: scale(1.1);
+}
+
+  .nav-arrow-side:hover {
+    transform: scale(1.1);
+  }
+
   /* Day-of-week row */
   .dow-row {
     padding: 0 20px;
@@ -222,10 +247,9 @@
   /* BBT label shown in corner on desktop */
   .bbt-label {
     position: absolute;
-    bottom: 4px;
-    right: 4px;
+    bottom: 1px;
     font-size: 8px;
-    color: var(--text-muted);
+    color: black;
     font-family: monospace;
     opacity: 0.7;
     pointer-events: none;
@@ -236,5 +260,18 @@
 @media (max-width: 767px) {
   .bbt-label {
     display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .nav-arrow-side {
+    font-size: 22px;
+    width: 36px;
+    height: 36px;
+    background-color: transparent;
+  }
+
+  .nav-arrow-side:hover {
+    transform: scale(1.05);
   }
 }
