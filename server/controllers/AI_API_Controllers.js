@@ -1,6 +1,7 @@
 import OpenAI  from "openai";
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+
 function buildPrompt(day, month, year, entry) {
   const date = new Date(year, month, day).toLocaleDateString("en-US", {
     weekday: "long", month: "long", day: "numeric",

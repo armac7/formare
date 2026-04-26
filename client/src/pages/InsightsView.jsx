@@ -25,21 +25,27 @@ export default function InsightsView({day, month, year}) {
   entries.forEach(e => (e.symptoms || []).forEach(s => {
     symptomCount[s] = (symptomCount[s] || 0) + 1;
   }));
+
+  // Get top 3 symptoms, replacing underscores with spaces for better display
   const topSymptoms = Object.entries(symptomCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([key]) => key.replaceAll("_", " "));
 
+  // fetch monthly insight from OpenAI API
   async function fetchMonthlyInsight(force = false) {
     if (loggedDays === 0) return;
+    // Check cache first (valid for session or until data changes)
     const cacheKey = `formare_monthly_insight_${year}_${month}`;
     const cached = sessionStorage.getItem(cacheKey);
     if (cached && !force) { setInsight(cached); return; }
 
+    // set loading and reset error
     setAiLoading(true);
     setError(null);
 
     try {
+      // POST request to our server route, which forwards to OpenAI with the monthly data
       const res = await fetch(OPENAI_monthLY_ENDPOINT, {
         method: "POST",
         credentials: "include",
@@ -56,9 +62,13 @@ export default function InsightsView({day, month, year}) {
       });
 
       const data = await res.json();
+
       if (!res.ok) throw new Error(data.error || "Failed to fetch insight");
+
+      // Save insight to state and cache
       setInsight(data.insight);
       sessionStorage.setItem(cacheKey, data.insight);
+
     } catch (err) {
       setError("Could not load monthly insight. Try again later.");
     } finally {

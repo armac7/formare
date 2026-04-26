@@ -180,7 +180,7 @@ The data is called through `MonthStatusContext.jsx` into wherever it is needed u
 
 Let's take the `DayOverview.jsx` component as an example.
 
-![Day Overview Prieview](day-overview-preview.svg)
+![Day Overview Prieview](./images/day-overview-preview.svg)
 
 First, the export function is defined `export default function DayOverview({ day, onEdit }) {` and the
 month data is loaded `const { monthData, loading } = useMonthStatus();`
@@ -554,7 +554,7 @@ In `App.jsx` on the front end, the main ``App`` function checks via a `useEffect
 if (!user)   return <LoginPage onLogin={handleLogin} />;
 ```
 The `LoginPage` component handles both registration and logging in via togglable modes. We will run through both.<br>
-![Login Page](login-screen.png)
+![Login Page](./images/login-screen.png)
 
 **LOGIN:**
 1. The `LoginPage` component returns the following divs for form input where `isLogin` is either `"login"` or `"register"`. 
