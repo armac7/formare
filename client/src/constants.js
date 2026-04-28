@@ -11,32 +11,6 @@ export const MONTH_NAMES  = [
   "July","August","September","October","November","December",
 ];
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-function makeMockData() {
-  const data = {};
-  const daysInMonth = new Date(YEAR, MONTH + 1, 0).getDate();
-
-  const bleedingDays = { 1: "heavy", 2: "heavy", 3: "medium", 4: "light", 5: "spotting" };
-  const mucusTypes = ["dry", "moist", "wet", "slippery", "wet/slippery"];
-  const bbtBase = 97.2;
-
-  for (let d = 1; d <= Math.min(TODAY.getDate(), daysInMonth); d++) {
-    data[d] = {
-      bbt: bleedingDays[d] ? null : parseFloat((bbtBase + Math.random() * 0.8 + (d > 14 ? 0.4 : 0)).toFixed(2)),
-      bleeding: bleedingDays[d] || null,
-      mucus: bleedingDays[d] ? null : mucusTypes[Math.floor(Math.random() * mucusTypes.length)],
-      mucusCharacteristic: ["nothing", "tacky", "stretchy"][Math.floor(Math.random() * 3)],
-      symptoms: d % 3 === 0 ? ["fatigue"] : d % 5 === 0 ? ["headache", "backache"] : [],
-      notes: d === 3 ? "Felt very tired today, cramps in the morning." : d === 14 ? "Peak day — noticed stretchy CM." : "",
-    };
-  }
-
-  // console.log(data);
-  return { entries: data, projectedPeriod: [28, 29, 30, 31] };
-}
-
-export const MOCK = makeMockData();
-
 // ─── Bleeding ─────────────────────────────────────────────────────────────────
 export const bleedingColor = {
   heavy:    "#C0303F",

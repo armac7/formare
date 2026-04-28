@@ -3,10 +3,10 @@ import { deleteUser, getUserData, editUser, register } from '../controllers/dbCo
 
 const router = express.Router();
 
-router.post('/api/auth/register', register);
-router.put('/users/profile', editUser);
-router.get('/users/profile', getUserData);
-router.delete('/users/me', deleteUser);
+router.post('/api/users', register);              // Create new user (registration)
+router.get('/api/users/me', getUserData);         // Get current user profile
+router.put('/api/users/me', editUser);            // Update current user profile
+router.delete('/api/users/me', deleteUser);       // Delete current user account
 
 
 export default router;

@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { TODAY, MONTH_NAMES } from "../constants.js";
 import { useMonthStatus } from "../context/MonthStatusContext.jsx";
-import "./InsightsView.css";
-
-const OPENAI_monthLY_ENDPOINT = "/api/ai-monthly-insight";
+import "./css/InsightsView.css";
+import { getMonthlyInsight } from "../scripts/api/getMonthlyInsight.js";
 
 export default function InsightsView({day, month, year}) {
   const { monthData, loading, allMonthsData } = useMonthStatus();
@@ -25,45 +24,33 @@ export default function InsightsView({day, month, year}) {
   entries.forEach(e => (e.symptoms || []).forEach(s => {
     symptomCount[s] = (symptomCount[s] || 0) + 1;
   }));
+
+  // Get top 3 symptoms, replacing underscores with spaces for better display
   const topSymptoms = Object.entries(symptomCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([key]) => key.replaceAll("_", " "));
 
+  // fetch monthly insight from OpenAI API
   async function fetchMonthlyInsight(force = false) {
     if (loggedDays === 0) return;
+    // Check cache first (valid for session or until data changes)
     const cacheKey = `formare_monthly_insight_${year}_${month}`;
     const cached = sessionStorage.getItem(cacheKey);
     if (cached && !force) { setInsight(cached); return; }
 
+    // set loading and reset error
     setAiLoading(true);
     setError(null);
 
-    try {
-      const res = await fetch(OPENAI_monthLY_ENDPOINT, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          year: year,
-          month: month,
-          loggedDays,
-          bleedingDays,
-          avgBBT,
-          topSymptoms,
-          totalDays: new Date(year, month + 1, 0).getDate(),
-        }),
-      });
+    // Fetch AI insight from backend
+    const insight = await getMonthlyInsight(
+      month, year, loggedDays, bleedingDays, avgBBT, topSymptoms
+    );
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to fetch insight");
-      setInsight(data.insight);
-      sessionStorage.setItem(cacheKey, data.insight);
-    } catch (err) {
-      setError("Could not load monthly insight. Try again later.");
-    } finally {
-      setAiLoading(false);
-    }
+    setInsight(insight);
+    sessionStorage.setItem(cacheKey, insight);
+    setAiLoading(false);
   }
 
   useEffect(() => {

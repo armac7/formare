@@ -114,33 +114,6 @@ Formare exists to support a vision of health tracking rooted in:
 
 It is inspired by principles found in **Natural Family Planning**, but it is **not an NFP decision-making tool**.
 
----
-
-## 🛠️ Tech Stack
-
-Planned / current stack:
-
-**Frontend**
-- HTML / CSS / JavaScript
-- React
-- React Context API
-
-**Backend**
-- Node.js
-- Express.js
-- express-session
-- dotenv
-
-**Database**
-- MongoDB
-- Mongoose
-
-**Deployment**
-- GCP
-- Render
-
----
-
 ## ⚠️ Disclaimer
 
 Formare:
@@ -150,6 +123,38 @@ Formare:
 ❌ is not a replacement for certified NFP instruction  
 
 It is a **cycle awareness companion app only**
+
+---
+
+## 🛠️ Technology Stack
+
+**Backend**
+- Node.js with Express.js
+- MongoDB with Mongoose ODM
+- express-session for session management
+- bcrypt for password hashing
+- dotenv for environment configuration
+- OpenAI/Anthropic SDKs for AI integration
+
+**Frontend**
+- React (with React Context API)
+- Vite for build tooling
+- ESLint for linting
+
+**Key Dependencies**
+```json
+{
+	"express": "^5.2.1",
+	"mongoose": "^9.2.1",
+	"express-session": "^1.19.0",
+	"bcrypt": "^6.0.0",
+	"dotenv": "^17.3.1",
+	"openai": "^6.34.0",
+	"react": "^19.2.4",
+	"react-dom": "^19.2.4",
+	"vite": "^8.0.4"
+}
+```
 
 ---
 

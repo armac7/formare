@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { TODAY, YEAR, MONTH, MONTH_NAMES, DAYS_OF_WEEK, MOCK, bleedingColor } from "../constants.js";
+import { TODAY, YEAR, MONTH, MONTH_NAMES, DAYS_OF_WEEK, bleedingColor } from "../constants.js";
 import { useMonthStatus } from "../context/MonthStatusContext.jsx";
-import "./CalendarView.css";
+import "./css/CalendarView.css";
 
 function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < breakpoint);
@@ -69,7 +69,6 @@ export default function CalendarView({ onSelectDay, selectedDay }) {
     const state = dayState(d);
     const entry        = monthData[d];
     const bleeding     = entry?.bleeding;
-    // const isProjPeriod = MOCK.projectedPeriod.includes(d);
     const isSelected   = selectedDay === d && state !== "future";
     const isToday = d === todayDate && state !== "future";
     // console.log(`Day ${d} - State: ${state}, Bleeding: ${bleeding}, Projected: ${isProjPeriod}, Selected: ${isSelected}, Today: ${isToday}`);
@@ -82,7 +81,6 @@ export default function CalendarView({ onSelectDay, selectedDay }) {
 
     if (state === "future")                 { color = "var(--future-grey)"; }
     if (bleeding && bleeding !== "None")    { background = bleedingColor[bleeding]; color = bleeding === "spotting" ? "var(--burgundy)" : "white"; }
-    // if (isProjPeriod && state === "future") { border = "2px dashed var(--rose)"; color = "var(--rose)"; }
     if (isSelected)                         { border = "2px solid var(--burgundy)"; }
     if (isToday && !isSelected)             { border = "2px solid var(--gold)"; }
     if (isToday)                            { fontWeight = 700; }

@@ -9,11 +9,14 @@
   - [Month Status Context Explanation](#month-status-context-explanation)
 - [Back-End](#back-end)
   - [Stack and File Config](#stack-and-file-config)
+  - [Environment Variables](#environment-variables)
   - [Database Definition and Mongoose Models](#database-definition-and-mongoose-models)
   - [Data Call Example](#data-call-example)
   - [Database Design Explanation](#database-design-explanation)
   - [Authentication Flow](#authentication-flow)
-  - [Environment Variables](#environment-variables)
+  - [Session Handling](#session-handling)
+  - [AI Integration](#ai-integration)
+- [Sections to Add](#sections-to-add)
 
 ## Front-End
 
@@ -180,7 +183,7 @@ The data is called through `MonthStatusContext.jsx` into wherever it is needed u
 
 Let's take the `DayOverview.jsx` component as an example.
 
-![Day Overview Prieview](day-overview-preview.svg)
+![Day Overview Prieview](./images/day-overview-preview.svg)
 
 First, the export function is defined `export default function DayOverview({ day, onEdit }) {` and the
 month data is loaded `const { monthData, loading } = useMonthStatus();`
@@ -554,7 +557,7 @@ In `App.jsx` on the front end, the main ``App`` function checks via a `useEffect
 if (!user)   return <LoginPage onLogin={handleLogin} />;
 ```
 The `LoginPage` component handles both registration and logging in via togglable modes. We will run through both.<br>
-![Login Page](login-screen.png)
+![Login Page](./images/login-screen.png)
 
 **LOGIN:**
 1. The `LoginPage` component returns the following divs for form input where `isLogin` is either `"login"` or `"register"`. 
@@ -793,6 +796,169 @@ export async function logout(req, res)
 ```
 5. The user is logged out on the frontend immediately upon clicking logout, with the session destroyed on the backend shortly after.
 
+### Session Handling
+
+**⚠️ Known Issue: secure is currently set to false despite the app running HTTPS in production. This should be corrected to true, and app.set('trust proxy', 1) should be added to /server/app.js to ensure the secure cookie works correctly behind a reverse proxy.**
+
+
+Formare utilizes `express-session` for session handling in the `/server/middleware/session.js` file. In this file, `express-session` and `dotenv` are both imported and `dotenv.config()` is ran.
+
+The main component of the file consists of the following:
+
+```js
+export default session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24,
+        secure: false 
+    } // Set to true if using HTTPS
+});
+```
+
+This exports the session middleware. A few things to note:
+- `SESSION_SECRET` is a `.env` variable
+- `resave: false` prevents the session from being re-saved to the store on every request if it has not been modified
+- `saveUnitialized: false` prevents empty, unmodified sessions from being saved
+- `maxAge` sets the key to expire after 24 hours.
+- `secure` should be set to `true` for production. 
+
+When a user logins in and the `login` function is called from `/server/controllers/authControllers.js`, the session is created and saved
+```js
+req.session.user = { id: user._id, username: user.username };
+req.session.save();
+```
+And when the user logs out, the session is destroyed
+```js
+req.session.destroy(err => {
+  if (err) {
+    console.error("Session destroy error: ", err);
+    return res.status(500).json({success: false});
+  }
+
+  res.clearCookie("connect.sid");
+
+  res.status(200).json({success: true});
+});
+```
+
+
+### AI Integration
+
+Formare allows for daily and monthly insights via GPT AI integration through the OpenAI API. Later, a feature should be added to make this a preference which is able to be toggled on and off. For now, though, it is enabled by default and unable to be turned off. First, to set it up, the following must be added to the `.env` stored in the `/server` file.
+
+`OPENAI_API_KEY=<your-api-key-here>`
+
+Once this is added, Formare is able to use your API key to request responses from the selected OpenAI GPT model.
+
+Here is how it works.
+
+Daily Insights are part of the `DayOverview` component at `/client/src/pages/DayOverview.jsx`. 
+1. A custom hook is stored to the file directory `/client/src/hooks` titled `useAIInsight.js`. This hook takes as props the day, month, year, and given day entry and utilizes a new script of the same name to get a response from the backend regarding AI insight.
+
+```jsx
+const fetch_ = useCallback(async (force = false) => {
+    // Need a day and some data to generate insight
+    if (!day || !entry) return;
+
+    // uses custom cacheKey function to see if the insight has already been generated and stored
+    const key    = cacheKey(day, month, year);
+    // tries to get a cached insight
+    const cached = sessionStorage.getItem(key);
+
+    // if the insight is cached, return that insight by the hook
+    if (cached && !force) {
+      setInsight(cached);
+      return;
+    }
+
+    // else, start loading and set error to null
+    setLoading(true);
+    setError(null);
+
+    try {
+      // run the getAIInsight script and await
+      const result = await getAIInsight(day, month, year, entry);
+
+      // the result is now set as the insight
+      setInsight(result);
+      
+      // the key is used to cache the result
+      sessionStorage.setItem(key, result);
+    } catch (err) {
+      setError("Could not load insight. Try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }, [day, month, year, entry]);
+  ```
+  2. `getAIInsight.js` script is called from `/client/src/scripts/api` which requests a response from the backend with the given data from the hook:
+  ```jsx
+  export async function getAIInsight(day, month, year, entryData) {
+  try {
+    const res = await fetch('/api/ai-insight', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ day, month, year, entry: entryData }),
+    });
+  ```
+  3. This routes to newly added `insightRoute.js` in `/server/routes` which calls to `/server/controllers/AI_API_Controllers.js` via `router.post("/api/ai-insight", getAIDaily);`
+  4. The `getAIDaily` function is called from `AI_API_Controllers.js`
+  ```jsx
+  export async function getAIDaily(req, res) {
+    if (!req.session?.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // destructures the request body
+    const { day, month, year, entry } = req.body;
+
+    if (!day || !entry) {
+      return res.status(400).json({ error: "Missing day or entry data" });
+    }
+
+    // calls custom buildPrompt function
+    const prompt = buildPrompt(day, month, year, entry);
+
+    try {
+      // connects to the GPT-4o-mini model and sends the prompt over
+      const completion = await client.chat.completions.create({
+        model:      "gpt-4o-mini", // cheap and fast, perfect for this
+        max_tokens: 200,
+        messages: [
+          {
+            role:    "system",
+            content: "You are a knowledgeable and supportive women's health assistant. Provide short, warm, and actionable cycle insights based on logged data. Never diagnose or make medical claims. Keep responses to 2-3 sentences.",
+          },
+          {
+            role:    "user",
+            content: prompt,
+          },
+        ],
+      });
+
+      // the insight is saved and sent as JSON back as a response
+      const insight = completion.choices[0]?.message?.content?.trim() ?? "";
+      res.json({ insight });
+
+    } catch (err) {
+      console.error("OpenAI API error:", err);
+      res.status(500).json({ error: "Failed to generate insight" });
+    }
+  };
+  ```
+  5. The response is returned to the `getAIInsight.js` script which is then sent back to the hook at `useAIInsight.js` then finally back to `DayOverview.jsx` and presented to the user via the component:
+  ```jsx
+  {insight && !insightLoading && (
+    <p className="insight-text">{insight}</p>
+  )}
+  ```
+This same pattern is repeated for monthly AI insight using a different backend route from the `InsightsView` React component, though the function is ran directly from the component page file.
+
+
 # Sections to Add to Documentation
 
 ## Front-End
@@ -800,7 +966,6 @@ export async function logout(req, res)
 - CSS/styling approach
 
 ## Back-End
-- Session handling, what does session middleware do and how long does the session last
 - Other routes, like dbRoutes
 
 ## General

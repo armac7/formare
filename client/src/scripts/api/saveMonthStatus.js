@@ -1,7 +1,7 @@
 export async function saveMonthStatus(monthData) {
     try {
         // console.log("Saving month status: ", monthData);
-        const res = await fetch('/api/bodystatus', {
+        const res = await fetch('/api/body-status', {
             method: "POST",
             credentials: "include",
             headers: {
