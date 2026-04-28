@@ -2,7 +2,7 @@ import { YEAR, MONTH, SYMPTOM_OPTIONS, bleedingColor, bleedingLabel, btnPrimaryS
 import { useMonthStatus } from "../context/MonthStatusContext.jsx";
 import { useAIInsight } from "../hooks/useAIInsight.js";
 import MucusIcon from "../components/MucusIcon.jsx";
-import "./DayOverview.css";
+import "./css/DayOverview.css";
 
 export default function DayOverview({ day, month, year, onEdit }) {
   const { monthData, loading } = useMonthStatus(month, year);

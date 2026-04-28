@@ -22,7 +22,7 @@ export default function App() {
   const [loading,     setLoading]     = useState(true);
 
   async function handleLogin() {
-    const res  = await fetch("/auth", { credentials: "include" });
+    const res  = await fetch("/api/auth", { credentials: "include" });
     const data = await res.json();
     if (data.loggedIn) setUser({ name: data.username });
   }
@@ -37,7 +37,7 @@ export default function App() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res  = await fetch("/auth", { credentials: "include" });
+        const res  = await fetch("/api/auth", { credentials: "include" });
         const data = await res.json();
         if (data.loggedIn) setUser({ name: data.username });
         else setUser(null);

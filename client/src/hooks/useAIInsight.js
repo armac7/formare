@@ -12,7 +12,7 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { getAIInsight } from "../scripts/api/getAIInsight.js";
+import { getDailyInsight } from "../scripts/api/getDailyInsight.js";
 
 function cacheKey(day, month, year) {
   return `formare_insight_${year}_${month}_${day}`;
@@ -39,7 +39,7 @@ export function useAIInsight(day, month, year, entry) {
     setError(null);
 
     try {
-      const result = await getAIInsight(day, month, year, entry);
+      const result = await getDailyInsight(day, month, year, entry);
       setInsight(result);
       sessionStorage.setItem(key, result);
     } catch (err) {

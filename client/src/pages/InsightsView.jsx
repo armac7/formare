@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { TODAY, MONTH_NAMES } from "../constants.js";
 import { useMonthStatus } from "../context/MonthStatusContext.jsx";
-import "./InsightsView.css";
-
-const OPENAI_monthLY_ENDPOINT = "/api/ai-monthly-insight";
+import "./css/InsightsView.css";
+import { getMonthlyInsight } from "../scripts/api/getMonthlyInsight.js";
 
 export default function InsightsView({day, month, year}) {
   const { monthData, loading, allMonthsData } = useMonthStatus();
@@ -44,36 +43,14 @@ export default function InsightsView({day, month, year}) {
     setAiLoading(true);
     setError(null);
 
-    try {
-      // POST request to our server route, which forwards to OpenAI with the monthly data
-      const res = await fetch(OPENAI_monthLY_ENDPOINT, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          year: year,
-          month: month,
-          loggedDays,
-          bleedingDays,
-          avgBBT,
-          topSymptoms,
-          totalDays: new Date(year, month + 1, 0).getDate(),
-        }),
-      });
+    // Fetch AI insight from backend
+    const insight = await getMonthlyInsight(
+      month, year, loggedDays, bleedingDays, avgBBT, topSymptoms
+    );
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Failed to fetch insight");
-
-      // Save insight to state and cache
-      setInsight(data.insight);
-      sessionStorage.setItem(cacheKey, data.insight);
-
-    } catch (err) {
-      setError("Could not load monthly insight. Try again later.");
-    } finally {
-      setAiLoading(false);
-    }
+    setInsight(insight);
+    sessionStorage.setItem(cacheKey, insight);
+    setAiLoading(false);
   }
 
   useEffect(() => {

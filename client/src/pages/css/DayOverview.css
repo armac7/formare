@@ -1,0 +1,356 @@
+/* ── Loading ── */
+.overview-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+}
+
+.overview-loading p {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* ── Empty state (no day selected) ── */
+.overview-empty-prompt {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* ── Wrapper ── */
+.overview-wrap {
+  padding: 0 16px 16px;
+}
+
+/* ── Day header ── */
+.overview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.overview-date-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--burgundy);
+}
+
+.overview-edit-btn {
+  background: var(--parchment);
+  border: 1px solid var(--gold-light);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--rose-deep);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s;
+}
+
+.overview-edit-btn:hover {
+  background: var(--gold-light);
+}
+
+/* ── Content stack ── */
+.overview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Biomarker cards row ── */
+.bio-row {
+  display: flex;
+  gap: 10px;
+}
+
+.bio-card {
+  flex: 1;
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.bio-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.bio-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bio-value--muted {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.bio-mucus-inner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bio-mucus-inner .bio-value {
+  font-size: 12px;
+}
+
+/* ── Symptoms ── */
+.overview-section {
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.overview-section-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.symptom-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.symptom-chip {
+  background: var(--rose-light);
+  color: var(--burgundy);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
+/* ── Notes ── */
+.overview-notes-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.overview-notes-text--empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── No entry state ── */
+.overview-no-entry {
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.overview-no-entry p {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.overview-add-btn {
+  margin-top: 12px;
+  padding: 9px 20px;
+  font-size: 13px;
+}
+
+/* ════════════════════════════════
+   DESKTOP  (≥ 768px)
+════════════════════════════════ */
+@media (min-width: 768px) {
+
+  .overview-wrap {
+    padding: 0 24px 24px;
+  }
+
+  .overview-date-label {
+    font-size: 24px;
+  }
+
+  .bio-card {
+    padding: 12px 16px;
+  }
+
+  .bio-label {
+    font-size: 11px;
+  }
+
+  .bio-value {
+    font-size: 15px;
+  }
+
+  .overview-section {
+    padding: 12px 16px;
+  }
+
+  .overview-section-label {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .symptom-chip {
+    font-size: 13px;
+    padding: 4px 12px;
+  }
+
+  .overview-notes-text {
+    font-size: 14px;
+  }
+}
+
+/* ── Section sublabel ── */
+.overview-section-sublabel {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 8px 0 4px;
+  font-weight: 700;
+}
+
+/* ── AI Insight section ── */
+.insight-section {
+  background: linear-gradient(135deg, var(--parchment) 0%, #fdf6ee 100%);
+  border: 1px solid var(--gold-light);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.insight-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.insight-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--burgundy);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.insight-refresh-btn {
+  background: none;
+  border: 1px solid var(--gold-light);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
+}
+
+.insight-refresh-btn:hover:not(:disabled) {
+  background: var(--gold-light);
+  color: var(--burgundy);
+}
+
+.insight-refresh-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Loading dots animation */
+.insight-loading {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.insight-loading-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rose-deep);
+  animation: insight-bounce 1.2s ease-in-out infinite;
+}
+
+.insight-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.insight-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes insight-bounce {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+  40%           { transform: scale(1);   opacity: 1;   }
+}
+
+/* Insight text */
+.insight-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text);
+  font-style: italic;
+}
+
+/* Error state */
+.insight-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.insight-error p {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.insight-retry-btn {
+  background: none;
+  border: 1px solid var(--gold-light);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--rose-deep);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.insight-retry-btn:hover {
+  background: var(--gold-light);
+}
+
+/* Empty state */
+.insight-empty {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .insight-section {
+    padding: 16px 20px;
+  }
+
+  .insight-text {
+    font-size: 16px;
+  }
+}

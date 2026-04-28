@@ -41,3 +41,4 @@ Each entry represents a daily record:
   "flow": "light",
   "symptoms": ["cramps", "fatigue"]
 }
+```

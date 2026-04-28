@@ -1,12 +1,11 @@
 /**
- * getAIInsight.js
+ * getDailyInsight.js
  * Fetches an AI-generated daily insight from the backend.
  * The backend proxies to Claude — user data never goes directly to the API from the browser.
  */
-
-export async function getAIInsight(day, month, year, entryData) {
+export async function getDailyInsight(day, month, year, entryData) {
   try {
-    const res = await fetch('/api/ai-insight', {
+    const res = await fetch('/api/insights/daily', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
