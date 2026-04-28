@@ -24,17 +24,22 @@ export default function InsightsView({day, month, year}) {
   entries.forEach(e => (e.symptoms || []).forEach(s => {
     symptomCount[s] = (symptomCount[s] || 0) + 1;
   }));
+
+  // Get top 3 symptoms, replacing underscores with spaces for better display
   const topSymptoms = Object.entries(symptomCount)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([key]) => key.replaceAll("_", " "));
 
+  // fetch monthly insight from OpenAI API
   async function fetchMonthlyInsight(force = false) {
     if (loggedDays === 0) return;
+    // Check cache first (valid for session or until data changes)
     const cacheKey = `formare_monthly_insight_${year}_${month}`;
     const cached = sessionStorage.getItem(cacheKey);
     if (cached && !force) { setInsight(cached); return; }
 
+    // set loading and reset error
     setAiLoading(true);
     setError(null);
 
