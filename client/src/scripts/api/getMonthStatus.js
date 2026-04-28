@@ -1,7 +1,7 @@
 export async function getMonthStatus(year, month) {
   try {
     const res = await fetch(
-      `/api/month-info?year=${year}&month=${month}`,
+      `/api/body-status/${year}/${month}`,
       {
           method: 'GET',
           credentials: "include"
@@ -10,10 +10,6 @@ export async function getMonthStatus(year, month) {
 
     const data = await res.json();
       
-    // if (!res.ok) {
-    //   throw new Error(data.error || 'Failed to fetch month status');
-    // }
-    // console.log("Received month status data:", data);
     return data;
       
   } catch (err) {

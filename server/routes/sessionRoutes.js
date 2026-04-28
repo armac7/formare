@@ -3,6 +3,6 @@ import { loggedIn } from '../middleware/session.js';
 
 const router = express.Router();
 
-router.get('/checkAuth', loggedIn);
+router.get('/api/auth/status', loggedIn);
 
 export default router;
