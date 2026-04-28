@@ -81,7 +81,7 @@ export default function CalendarView({ onSelectDay, selectedDay }) {
 
     if (state === "future")                 { color = "var(--future-grey)"; }
     if (bleeding && bleeding !== "None")    { background = bleedingColor[bleeding]; color = bleeding === "spotting" ? "var(--burgundy)" : "white"; }
-    // if (isProjPeriod && state === "future") { border = "2px dashed var(--rose)"; color = "var(--rose)"; }
+
     if (isSelected)                         { border = "2px solid var(--burgundy)"; }
     if (isToday && !isSelected)             { border = "2px solid var(--gold)"; }
     if (isToday)                            { fontWeight = 700; }
