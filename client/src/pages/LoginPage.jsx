@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { inputStyle, btnPrimaryStyle } from "../constants.js";
 import { login } from "../scripts/auth/login.js";
-import { register } from "../scripts/auth/register.js";
+import { registerUser } from "../scripts/api/registerUser.js";
 
 export default function LoginPage({ onLogin }) {
   const [mode, setMode] = useState("login"); // "login" | "register"
@@ -43,7 +43,7 @@ export default function LoginPage({ onLogin }) {
     if (pass !== confirmPass) { setErr("Passwords do not match."); return; }
 
     try {
-      const data = await register(username, pass, confirmPass);
+      const data = await registerUser(username, pass, confirmPass);
       if (!data.success) { setErr(data.message || "Could not create account."); return; }
       switchMode("login");
       setErr("Account created! Please log in.");

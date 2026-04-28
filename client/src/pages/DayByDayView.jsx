@@ -9,7 +9,7 @@ import {
 } from "../constants.js";
 import Section from "../components/Section.jsx";
 import MucusIcon from "../components/MucusIcon.jsx";
-import "./DayByDayView.css";
+import "./css/DayByDayView.css";
 
 export default function DayByDayView({ initialDay, month, year, onBack }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
