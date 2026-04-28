@@ -114,6 +114,16 @@ Formare exists to support a vision of health tracking rooted in:
 
 It is inspired by principles found in **Natural Family Planning**, but it is **not an NFP decision-making tool**.
 
+## ⚠️ Disclaimer
+
+Formare:
+
+❌ is not medical advice  
+❌ is not a contraceptive tool  
+❌ is not a replacement for certified NFP instruction  
+
+It is a **cycle awareness companion app only**
+
 ---
 
 ## 🛠️ Technology Stack
@@ -145,20 +155,6 @@ It is inspired by principles found in **Natural Family Planning**, but it is **n
 	"vite": "^8.0.4"
 }
 ```
-
-**Note:**  
-- JWT, Joi, Helmet, Morgan, and CORS are **not** currently used in your codebase.  
-- If you want to add validation, security headers, or logging, consider adding Joi, Helmet, and Morgan as future improvements.
-
-## ⚠️ Disclaimer
-
-Formare:
-
-❌ is not medical advice  
-❌ is not a contraceptive tool  
-❌ is not a replacement for certified NFP instruction  
-
-It is a **cycle awareness companion app only**
 
 ---
 
