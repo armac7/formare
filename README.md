@@ -116,30 +116,39 @@ It is inspired by principles found in **Natural Family Planning**, but it is **n
 
 ---
 
-## 🛠️ Tech Stack
-
-Planned / current stack:
-
-**Frontend**
-- HTML / CSS / JavaScript
-- React
-- React Context API
+## 🛠️ Technology Stack
 
 **Backend**
-- Node.js
-- Express.js
-- express-session
-- dotenv
+- Node.js with Express.js
+- MongoDB with Mongoose ODM
+- express-session for session management
+- bcrypt for password hashing
+- dotenv for environment configuration
+- OpenAI/Anthropic SDKs for AI integration
 
-**Database**
-- MongoDB
-- Mongoose
+**Frontend**
+- React (with React Context API)
+- Vite for build tooling
+- ESLint for linting
 
-**Deployment**
-- GCP
-- Render
+**Key Dependencies**
+```json
+{
+	"express": "^5.2.1",
+	"mongoose": "^9.2.1",
+	"express-session": "^1.19.0",
+	"bcrypt": "^6.0.0",
+	"dotenv": "^17.3.1",
+	"openai": "^6.34.0",
+	"react": "^19.2.4",
+	"react-dom": "^19.2.4",
+	"vite": "^8.0.4"
+}
+```
 
----
+**Note:**  
+- JWT, Joi, Helmet, Morgan, and CORS are **not** currently used in your codebase.  
+- If you want to add validation, security headers, or logging, consider adding Joi, Helmet, and Morgan as future improvements.
 
 ## ⚠️ Disclaimer
 
